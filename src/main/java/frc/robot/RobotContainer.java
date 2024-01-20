@@ -17,18 +17,21 @@ import frc.robot.Subsystems.Drivetrain;
 public class RobotContainer {
 
   final Drivetrain drivetrain = new Drivetrain();
-  
-  private final Joystick driverController = new Joystick(OIConstants.kDriverControllerPort);
+
+  private final Joystick driverController = new Joystick(
+    OIConstants.kDriverControllerPort
+  );
 
   public RobotContainer() {
-
-    drivetrain.setDefaultCommand(new SwerveJoystickCmd(
-      drivetrain, 
-      () -> driverController.getRawAxis(OIConstants.kXboxLeftXAxis),
-      () -> driverController.getRawAxis(OIConstants.kXboxLeftYAxis),
-      () -> -driverController.getRawAxis(OIConstants.kXboxRightXAxis),
-      () -> driverController.getRawButton(OIConstants.kXboxAButton)
-      ));
+    drivetrain.setDefaultCommand(
+      new SwerveJoystickCmd(
+        drivetrain,
+        () -> driverController.getRawAxis(OIConstants.kXboxLeftXAxis),
+        () -> driverController.getRawAxis(OIConstants.kXboxLeftYAxis),
+        () -> -driverController.getRawAxis(OIConstants.kXboxRightXAxis),
+        () -> driverController.getRawButton(OIConstants.kXboxAButton)
+      )
+    );
 
     configureBindings();
   }
@@ -40,11 +43,9 @@ public class RobotContainer {
     new JoystickButton(driverController, OIConstants.kXboxXButton)
       .whileTrue(new TrackTargetIDRotCmd(drivetrain, 1));
 
-      new JoystickButton(driverController, OIConstants.kXboxYButton)
+    new JoystickButton(driverController, OIConstants.kXboxYButton)
       .whileTrue(new TrackTargetIDRotCmd(drivetrain, 2));
   }
-
- 
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
