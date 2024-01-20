@@ -6,7 +6,6 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,7 +14,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants.DriveConstants;
@@ -36,7 +34,6 @@ public class Drivetrain extends SubsystemBase {
      private final SwerveModule frontRightModule = new SwerveModule(8, "FR");
 
     private Pigeon2 gyro = new Pigeon2(10);
-    private AHRS navx = new AHRS(SPI.Port.kMXP);
 
 
 
@@ -64,11 +61,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void zeroHeading() {
-        if (DriveConstants.kPidgeonGyro) {
             gyro.reset();
-        } else {
-            navx.reset();
-        }
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -77,11 +70,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getHeading() {
-        if (DriveConstants.kPidgeonGyro) {
             return gyro.getAngle();
-        } else {
-            return navx.getAngle();
-        }
     }
 
 
