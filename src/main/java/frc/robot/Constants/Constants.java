@@ -9,6 +9,8 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
+  public static final int kThroughBoreEncoderRev = 8192;
+
   public static class OIConstants {
 
     public static final int kDriverControllerPort = 0;
@@ -64,5 +66,25 @@ public class Constants {
     );
 
     public static final String kFrontCamName = "Camera 1";
+  }
+
+  public static class ElevatorConstants {
+
+    public static final int kLeaderMotorID = 25;
+    public static final int kFollowerMotorID = 26;
+    public static final int kElevatorMin = 0;
+    public static final int kElevatorMax = 100;
+    public static final int kElevatorClimb = 0;
+
+    public static final double kPLeaderElevator = 5e-5;
+    public static final double kILeaderElevator = 1e-6;
+    public static final double kDLeaderElevator = 0;
+    public static final double kIzLeaderElevator = 0;
+    public static final double KFFLeaderElevator = 0;
+    public static final double kMaxOutLeaderElevator = 1;
+    public static final double kMinOutLeaderElevator = -1;
+    public static final double kMaxRPM = 5700;
+    public static final double kMaxVelLeaderElevator = 2000;
+    public static final double kmMaxAccLeaderElevator = 1500;
   }
 }
