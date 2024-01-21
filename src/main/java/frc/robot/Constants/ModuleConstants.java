@@ -52,7 +52,7 @@ public class ModuleConstants {
           kMaxModuleSpeed = 1;
           kMaxModuleAngularSpeed = 1;
 
-          kdriveEncoderReversed = true;
+          kdriveEncoderReversed = false;
           kturningEncoderReversed = true;
 
           kturningMotorID = 11;
@@ -67,7 +67,7 @@ public class ModuleConstants {
           kMaxModuleSpeed = 1;
           kMaxModuleAngularSpeed = 1;
 
-          kdriveEncoderReversed = false;
+          kdriveEncoderReversed = true;
           kturningEncoderReversed = true;
 
           kturningMotorID = 21;
