@@ -72,6 +72,7 @@ public class Constants {
 
     public static final int kLeaderMotorID = 25;
     public static final int kFollowerMotorID = 26;
+
     public static final int kElevatorMin = 0;
     public static final int kElevatorMax = 100;
     public static final int kElevatorClimb = 0;
@@ -85,6 +86,29 @@ public class Constants {
     public static final double kMinOutLeaderElevator = -1;
     public static final double kMaxRPM = 5700;
     public static final double kMaxVelLeaderElevator = 2000;
-    public static final double kmMaxAccLeaderElevator = 1500;
+    public static final double kMaxAccLeaderElevator = 1500;
+
+    public static final double kElevatorHeightTolerance = 0.5;
+  }
+
+  public static class WristConstants {
+    public static final int kWristMotorID = 27;
+    public static final double kwristAngleTolerance = 0.5;
+  }
+
+  public static class ShooterConstants {
+
+    public static final int kLeaderMotorID = 35;
+    public static final int kFollowerMotorID = 36;
+    public static final int kFeederMotorID = 37;
+
+    public static final double kShooterTargetSpeed = 5000.0;
+    public static final double kFeedDuration = 1.0;
+  }
+
+  public static class IntakeConstants {
+
+    public static final int kWristMotorID = 45;
+    public static final int kIntakeMotorID = 46;
   }
 }
