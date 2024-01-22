@@ -30,8 +30,16 @@ public class Wrist extends SubsystemBase {
     wristPID.setFeedbackDevice(wristEncoder);
   }
 
+  public void periodic() {
+    updateWristState();
+  }
+
   public WristState getWristState() {
     return state;
+  }
+
+  public void zeroWrist() {
+    wristEncoder.setPosition(0);
   }
 
   public void stopWrist() {
@@ -68,7 +76,6 @@ public class Wrist extends SubsystemBase {
         break;
       case STOPPED:
         stopWrist();
-        state = WristState.IDLE;
         break;
     }
   }

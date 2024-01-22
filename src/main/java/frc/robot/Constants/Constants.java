@@ -92,6 +92,7 @@ public class Constants {
   }
 
   public static class WristConstants {
+
     public static final int kWristMotorID = 27;
     public static final double kwristAngleTolerance = 0.5;
   }
@@ -108,7 +109,9 @@ public class Constants {
 
   public static class IntakeConstants {
 
-    public static final int kWristMotorID = 45;
+    public static final int kIntakePivotMotorID = 45;
     public static final int kIntakeMotorID = 46;
+
+    public final static double kIntakeAngleTolerance = 0.5;
   }
 }
