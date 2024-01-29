@@ -32,13 +32,13 @@ public class RobotContainer {
         () -> driverController.getRawAxis(OIConstants.kXboxLeftXAxis),
         () -> driverController.getRawAxis(OIConstants.kXboxLeftYAxis),
         () -> -driverController.getRawAxis(OIConstants.kXboxRightXAxis),
-        () -> driverController.getRawButton(OIConstants.kXboxAButton)
+        () -> driverController.getRawButton(OIConstants.kXboxLeftBumper)
       )
     );
 
     configureBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooser("TwoNote");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }

@@ -18,7 +18,7 @@ public class ModuleConstants {
   public static final double kPTurning = .6;
 
   public static final double kPhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(
-    16.5
+    15.1
   );
   public static final double kPhysicalMaxAngularSpeedRadiansPerSecond =
     3 * Math.PI;
