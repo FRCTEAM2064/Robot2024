@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.sql.Driver;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -12,13 +14,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.DriveCommands.ResetHeadingCmd;
 import frc.robot.Commands.DriveCommands.SwerveJoystickCmd;
+import frc.robot.Commands.SubsystemCommands.ShooterCmd;
 import frc.robot.Commands.VisionCommands.TrackTargetIDRotCmd;
 import frc.robot.Constants.Constants.OIConstants;
 import frc.robot.Subsystems.Drivetrain;
+import frc.robot.Subsystems.Shooter;
 
 public class RobotContainer {
 
   final Drivetrain drivetrain = new Drivetrain();
+  final Shooter shooter = new Shooter();
   private final SendableChooser<Command> autoChooser;
 
   private final Joystick driverController = new Joystick(
@@ -36,9 +41,11 @@ public class RobotContainer {
       )
     );
 
+    drivetrain.resetOdometry(drivetrain.getPose());
+
     configureBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser("TwoNote");
+    autoChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -52,6 +59,9 @@ public class RobotContainer {
 
     new JoystickButton(driverController, OIConstants.kXboxYButton)
       .whileTrue(new TrackTargetIDRotCmd(drivetrain, 2));
+
+    new JoystickButton(driverController, OIConstants.kXboxXButton).
+      onTrue(new ShooterCmd(shooter));
   }
 
   public Command getAutonomousCommand() {

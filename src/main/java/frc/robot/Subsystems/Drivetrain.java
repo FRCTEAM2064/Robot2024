@@ -10,6 +10,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -165,7 +166,8 @@ AutoBuilder.configureHolonomic(
       "BR Cancoder",
       backRightModule.getAbsolutePositionDegrees()
     );
-
+    SmartDashboard.putNumber("Gyro", (double) gyro.getYaw().getValue()
+    );
     positionEstimator.update(getRotation2d(), getModulePositions());
   }
 
