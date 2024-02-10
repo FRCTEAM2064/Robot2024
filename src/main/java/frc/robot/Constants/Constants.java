@@ -103,8 +103,8 @@ public class Constants {
     public static final int kFollowerMotorID = 36;
     public static final int kFeederMotorID = 37;
 
-    public static final double kShooterTargetSpeed = 2000.0;
-    public static final double kFeedDuration = 1.0;
+    public static final double kShooterTargetSpeed = 4000.0;
+    public static final double kFeedDuration = 5.0;
   }
 
   public static class IntakeConstants {

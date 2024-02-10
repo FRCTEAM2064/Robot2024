@@ -60,8 +60,8 @@ public class RobotContainer {
     new JoystickButton(driverController, OIConstants.kXboxYButton)
       .whileTrue(new TrackTargetIDRotCmd(drivetrain, 2));
 
-    new JoystickButton(driverController, OIConstants.kXboxXButton).
-      onTrue(new ShooterCmd(shooter));
+    new JoystickButton(driverController, OIConstants.kXboxXButton)
+    .onTrue(new ShooterCmd(shooter));
   }
 
   public Command getAutonomousCommand() {

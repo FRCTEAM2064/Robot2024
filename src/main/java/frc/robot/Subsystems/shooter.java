@@ -7,6 +7,7 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands.SubsystemCommands.ShooterCmd;
 import frc.robot.Constants.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
@@ -16,9 +17,13 @@ public class Shooter extends SubsystemBase {
   private CANSparkMax feederMotor;
 
   private RelativeEncoder leaderShooterEncoder;
-  private Timer feedTimer = new Timer();
+  public Timer feedTimer = new Timer();
 
   private ShooterState state = ShooterState.STOP;
+
+  private boolean gotIntoFeed = false;
+  private Integer counter = 0;
+  private boolean shooting = false;
 
   public Shooter() {
     leaderShooterMotor =
@@ -36,6 +41,7 @@ public class Shooter extends SubsystemBase {
 
   public void shooterStop() {
     leaderShooterMotor.set(0);
+    //shooting = false;
   }
 
   public void feederStop() {
@@ -47,8 +53,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot() {
-    leaderShooterMotor.set(1);
-    state = ShooterState.STARTING;
+    shooting = true;
+  }
+
+  public double getShooterSpeed() {
+    return leaderShooterEncoder.getVelocity();
   }
 
   public void runAll(){
@@ -56,46 +65,70 @@ public class Shooter extends SubsystemBase {
     feederMotor.set(1);
   }
 
+  private void handleStartState(){
+    if (leaderShooterEncoder.getVelocity() >= ShooterConstants.kShooterTargetSpeed) {
+      feedTimer.reset();
+      feedTimer.start();
 
-  public void updateShooterState() {
-    switch (state) {
-
-
-      case STARTING:
-        if (
-          leaderShooterEncoder.getVelocity() >=
-          ShooterConstants.kShooterTargetSpeed
-        ) {
-          feedTimer.reset();
-          feedTimer.start();
-          state = ShooterState.FEEDING;
-          SmartDashboard.putNumber("InSTART", 1);
-        }
-        break;
-
-
-      case FEEDING:
-        SmartDashboard.putNumber("InFEED", 1);
-        feed();
-        if(feedTimer.get() > ShooterConstants.kFeedDuration) {
-          state = ShooterState.STOP;
-          feedTimer.stop();
-          SmartDashboard.putNumber("InFEEDIF", 1);
-        }
-        break;
-
-
-      case STOP:
-        shooterStop();
-        feederStop();
-        break;
+      feederMotor.set(1);
+      state = ShooterState.FEEDING;
+    } else {
+      leaderShooterMotor.set(1);
     }
   }
 
+  private void handleFeedState(){
+    if (feedTimer.get() >= ShooterConstants.kFeedDuration) {
+      leaderShooterMotor.set(0);
+      feederMotor.set(0);
+      state = ShooterState.STOP;
+      shooting = false;
+    } else {
+      leaderShooterMotor.set(1);
+      feederMotor.set(1);
+    }
+  }
+
+  private void handleStopState(){
+    if (shooting) {
+      leaderShooterMotor.set(1);
+      state = ShooterState.STARTING;
+    } else {
+      leaderShooterMotor.set(0);
+      followerShooterMotor.set(0);
+    }
+  }
+
+
+
+  public void updateShooterState() {
+    switch (state) {
+      case STARTING:
+      handleStartState();
+        break;
+
+      case FEEDING:
+      handleFeedState();
+        break;
+
+      case STOP:
+      handleStopState();
+      break;
+    }
+  }
+
+
+  @Override
   public void periodic() {
-    // updateShooterState();
-    SmartDashboard.putNumber("Leader Motor RPM", leaderShooterEncoder.getVelocity());
+    updateShooterState();
+    SmartDashboard.putNumber("counter", counter);
+    SmartDashboard.putBoolean("isShooting",shooting);
+    SmartDashboard.putNumber("Feed Timer", feedTimer.get());
+    SmartDashboard.putNumber("Target Feed Time", ShooterConstants.kFeedDuration);
+    SmartDashboard.putNumber("Leader Motor RPM", getShooterSpeed());
+    SmartDashboard.putNumber("Motor Target Speed", ShooterConstants.kShooterTargetSpeed);
     SmartDashboard.putString("STATE", state.toString());
+    SmartDashboard.putBoolean("got into feed state", gotIntoFeed);
   }
 
   public enum ShooterState {
