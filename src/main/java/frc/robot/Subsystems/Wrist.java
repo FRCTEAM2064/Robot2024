@@ -15,7 +15,7 @@ public class Wrist extends SubsystemBase {
   private RelativeEncoder wristEncoder;
   private SparkPIDController wristPID;
 
-  private WristState state = WristState.IDLE;
+  private WristState state = WristState.AT_POSITION;
   private double wristPosition;
   private double wristTarget;
 
@@ -31,59 +31,37 @@ public class Wrist extends SubsystemBase {
   }
 
   public void periodic() {
-    updateWristState();
+    //updateWristState();
+
+    wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
   }
 
-  public WristState getWristState() {
-    return state;
+
+  private void movingState(){
   }
 
-  public void zeroWrist() {
-    wristEncoder.setPosition(0);
-  }
-
-  public void stopWrist() {
-    wristMotor.set(0);
-    state = WristState.STOPPED;
-  }
-
-  public double getWristAngle() {
-    wristPosition = wristEncoder.getPosition();
-    return wristPosition;
-  }
-
-  public void setWristAngle(double angle) {
-    wristTarget = angle;
-    state = WristState.MOVING;
-    wristPID.setReference(angle, ControlType.kPosition);
-    // mess with the pid values
+  private void atPositionState(){
+    if (Math.abs(wristTarget - wristPosition) > WristConstants.kwristAngleTolerance) {
+      wristPID.setReference(wristPosition, CANSparkMax.ControlType.kPosition);      
+    } else {
+      wristPID.setReference(wristPosition, CANSparkMax.ControlType.kPosition);
+    
+    }
   }
 
   public void updateWristState() {
     switch (state) {
-      case IDLE:
-        break;
       case MOVING:
-        if (
-          Math.abs(getWristAngle() - wristTarget) <
-          WristConstants.kwristAngleTolerance
-        ) {
-          state = WristState.AT_POSITION;
-        }
+      movingState();
         break;
       case AT_POSITION:
-        // hold position. this should be done with pid too ig
-        break;
-      case STOPPED:
-        stopWrist();
+      atPositionState();
         break;
     }
   }
 
   public enum WristState {
-    IDLE,
     MOVING,
     AT_POSITION,
-    STOPPED,
   }
 }

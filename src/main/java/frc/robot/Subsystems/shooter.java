@@ -65,7 +65,7 @@ public class Shooter extends SubsystemBase {
     feederMotor.set(1);
   }
 
-  private void handleStartState(){
+  private void startState(){
     if (leaderShooterEncoder.getVelocity() >= ShooterConstants.kShooterTargetSpeed) {
       feedTimer.reset();
       feedTimer.start();
@@ -77,7 +77,7 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  private void handleFeedState(){
+  private void feedState(){
     if (feedTimer.get() >= ShooterConstants.kFeedDuration) {
       leaderShooterMotor.set(0);
       feederMotor.set(0);
@@ -89,7 +89,7 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  private void handleStopState(){
+  private void stopState(){
     if (shooting) {
       leaderShooterMotor.set(1);
       state = ShooterState.STARTING;
@@ -104,15 +104,15 @@ public class Shooter extends SubsystemBase {
   public void updateShooterState() {
     switch (state) {
       case STARTING:
-      handleStartState();
+      startState();
         break;
 
       case FEEDING:
-      handleFeedState();
+      feedState();
         break;
 
       case STOP:
-      handleStopState();
+      stopState();
       break;
     }
   }
