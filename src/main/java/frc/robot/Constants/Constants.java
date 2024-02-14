@@ -1,11 +1,10 @@
 package frc.robot.Constants;
 
+import com.pathplanner.lib.util.PIDConstants;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
@@ -14,6 +13,7 @@ public class Constants {
   public static class OIConstants {
 
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
 
     public static final double kDeadband = 0.1;
 
@@ -35,27 +35,6 @@ public class Constants {
     public static final int kXboxRightYAxis = 5;
   }
 
-  public static class DriveConstants {
-
-    public static final boolean kPidgeonGyro = true;
-
-    public static final double kTrackWidth = Units.inchesToMeters(30);
-    public static final double kWheelBase = Units.inchesToMeters(30);
-
-    public static final double kMaxAcceleration = 3;
-    public static final double kMaxAngularAcceleration = 3;
-
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-      new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-      new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
-    );
-
-    public static double kVisionRotationP;
-
-    public static double kVisionTranslationP;
-  }
 
   public static class VisionConstants {
 
@@ -113,5 +92,11 @@ public class Constants {
     public static final int kIntakeMotorID = 46;
 
     public final static double kIntakeAngleTolerance = 0.5;
+  }
+
+  public static class AutonConstants {
+
+    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
   }
 }

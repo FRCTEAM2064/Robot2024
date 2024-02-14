@@ -4,45 +4,72 @@
 
 package frc.robot;
 
+import java.io.File;
+
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.wpilibj.Joystick;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Commands.DriveCommands.ResetHeadingCmd;
-import frc.robot.Commands.DriveCommands.SwerveJoystickCmd;
-import frc.robot.Commands.SubsystemCommands.ShooterCmd;
 import frc.robot.Commands.SubsystemCommands.WristCmd;
-import frc.robot.Commands.VisionCommands.TrackTargetIDRotCmd;
 import frc.robot.Constants.Constants.OIConstants;
-import frc.robot.Subsystems.Drivetrain;
 import frc.robot.Subsystems.Shooter;
+import frc.robot.Subsystems.SwerveSubsystem;
 import frc.robot.Subsystems.Wrist;
 
 public class RobotContainer {
 
-  final Drivetrain drivetrain = new Drivetrain();
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
   final Shooter shooter = new Shooter();
   final Wrist wrist = new Wrist();
   private final SendableChooser<Command> autoChooser;
 
-  private final Joystick driverController = new Joystick(
-    OIConstants.kDriverControllerPort
-  );
+  // private final Joystick driverController = new Joystick(
+  //   OIConstants.kDriverControllerPort
+  // );
+
+  XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
   public RobotContainer() {
-    drivetrain.setDefaultCommand(
-      new SwerveJoystickCmd(
-        drivetrain,
-        () -> driverController.getRawAxis(OIConstants.kXboxLeftXAxis),
-        () -> driverController.getRawAxis(OIConstants.kXboxLeftYAxis),
-        () -> -driverController.getRawAxis(OIConstants.kXboxRightXAxis),
-        () -> driverController.getRawButton(OIConstants.kXboxLeftBumper)
-      )
-    );
 
-    drivetrain.resetOdometry(drivetrain.getPose());
+
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the desired angle NOT angular rotation
+    Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDeadband),
+        () -> MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDeadband),
+        () -> driverController.getRightX(),
+        () -> driverController.getRightY());
+
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the angular velocity of the robot
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDeadband),
+        () -> MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDeadband),
+        () -> driverController.getRawAxis(2));
+
+    Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
+        () -> MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDeadband),
+        () -> MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDeadband),
+        () -> driverController.getRawAxis(2));
+
+    drivebase.setDefaultCommand(
+        !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+  
 
     configureBindings();
 
@@ -52,20 +79,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(driverController, OIConstants.kXboxBButton)
-      .onTrue(new ResetHeadingCmd(drivetrain));
 
-    new JoystickButton(driverController, OIConstants.kXboxXButton)
-      .whileTrue(new TrackTargetIDRotCmd(drivetrain, 1));
+     new JoystickButton(driverController, OIConstants.kXboxYButton).onTrue((new InstantCommand(drivebase::zeroGyro)));
 
-    new JoystickButton(driverController, OIConstants.kXboxYButton)
-      .whileTrue(new TrackTargetIDRotCmd(drivetrain, 2));
+    new JoystickButton(driverController, OIConstants.kXboxXButton).onTrue(new InstantCommand(shooter::shoot));
 
-    new JoystickButton(driverController, OIConstants.kXboxXButton)
-    .onTrue(new ShooterCmd(shooter));
+    new JoystickButton(driverController, OIConstants.kXboxLeftBumper).onTrue(new WristCmd(wrist));
 
-    new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
-    .onTrue(new WristCmd(wrist));
+    new JoystickButton(driverController, OIConstants.kXboxRightBumper).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
   public Command getAutonomousCommand() {
