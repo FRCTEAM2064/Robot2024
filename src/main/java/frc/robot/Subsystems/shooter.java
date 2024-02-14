@@ -7,7 +7,6 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Commands.SubsystemCommands.ShooterCmd;
 import frc.robot.Constants.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
