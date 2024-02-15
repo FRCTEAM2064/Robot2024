@@ -32,15 +32,23 @@ public class Intake extends SubsystemBase {
 
     intakePID = intakePivotMotor.getPIDController();
     intakePID.setFeedbackDevice(intakePivotEncoder);
+
+    intakePID.setP(IntakeConstants.kIntakeP);
+    intakePID.setI(IntakeConstants.kIntakeI);
+    intakePID.setD(IntakeConstants.kIntakeD);
+
+    intakePID.setSmartMotionAllowedClosedLoopError(IntakeConstants.kIntakeAngleTolerance, 0);
   }
 
   public IntakeState getIntakeState() {
     return state;
   }
 
-  public double getIntakeaAngle(){
-    return intakePivotEncoder.getPosition();
-  }
+  public double getIntakeAngle() {
+    double angleInDegrees = (intakePivotEncoder.getPosition() * 360) / IntakeConstants.kIntakeAngleRatio;
+    return angleInDegrees;
+}
+
 
   public void setIntakeAngle(double target){
     intakeTarget = target;
@@ -59,7 +67,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void updateIntakeState(){
-    if (Math.abs(getIntakeaAngle() - intakeTarget) > IntakeConstants.kIntakeAngleTolerance){
+    if (Math.abs(getIntakeAngle() - intakeTarget) > IntakeConstants.kIntakeAngleTolerance){
       state = IntakeState.MOVING;
     } else {
       state = IntakeState.AT_POSITION;

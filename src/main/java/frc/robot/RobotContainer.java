@@ -59,7 +59,7 @@ public class RobotContainer {
           driverController.getLeftX(),
           OIConstants.kDeadband
         ),
-      () -> driverController.getRightTriggerAxis(),
+      () -> driverController.getRightX(),
       () -> driverController.getRightY()
     );
 

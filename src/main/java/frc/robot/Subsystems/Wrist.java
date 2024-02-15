@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.WristConstants;
 
 public class Wrist extends SubsystemBase {
@@ -20,13 +21,15 @@ public class Wrist extends SubsystemBase {
     wristMotor =
       new CANSparkMax(WristConstants.kWristMotorID, MotorType.kBrushless);
 
-    wristEncoder = wristMotor.getEncoder();
-     //wristMotor.getAlternateEncoder(Constants.kThroughBoreEncoderRev);
+    wristEncoder =
+     wristMotor.getAlternateEncoder(Constants.kThroughBoreEncoderRev);
 
     wristPID = wristMotor.getPIDController();
     wristPID.setFeedbackDevice(wristEncoder);
 
-    wristPID.setP(1);
+    wristPID.setP(WristConstants.kWristP);
+    wristPID.setI(WristConstants.kWristI);
+    wristPID.setD(WristConstants.kWristD);
     wristPID.setSmartMotionAllowedClosedLoopError(WristConstants.kwristAngleTolerance, 0);
   }
 
@@ -34,9 +37,12 @@ public class Wrist extends SubsystemBase {
     wristTarget = target;
   }
 
-  public double getWristAngle(){
-    return wristEncoder.getPosition();
-  }
+public double getWristAngle() {
+    double angleInDegrees = (wristEncoder.getPosition() * 360);
+    
+    return angleInDegrees;
+}
+
 
   public WristState getState(){
     return state;

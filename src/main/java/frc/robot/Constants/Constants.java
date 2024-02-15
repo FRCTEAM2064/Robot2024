@@ -54,16 +54,13 @@ public class Constants {
     public static final int kElevatorMax = 100;
     public static final int kElevatorClimb = 0;
 
-    public static final double kPLeaderElevator = 5e-5;
-    public static final double kILeaderElevator = 1e-6;
-    public static final double kDLeaderElevator = 0;
-    public static final double kIzLeaderElevator = 0;
-    public static final double KFFLeaderElevator = 0;
-    public static final double kMaxOutLeaderElevator = 1;
-    public static final double kMinOutLeaderElevator = -1;
-    public static final double kMaxRPM = 5700;
-    public static final double kMaxVelLeaderElevator = 2000;
-    public static final double kMaxAccLeaderElevator = 1500;
+    public static final double kElevatorP = 1;
+    public static final double kElevatorI = 0;
+    public static final double kElevatorD = 0;
+
+    public static final double kElevatorRatio = 1/25;
+    public static final double kElevatorChainPitch = 0.25;
+    public static final int kElevatorSprocket = 25; 
 
     public static final double kElevatorHeightTolerance = 0.5;
   }
@@ -72,6 +69,11 @@ public class Constants {
 
     public static final int kWristMotorID = 27;
     public static final double kwristAngleTolerance = 0.5;
+
+    public static final double kWristP = 1;
+    public static final double kWristI = 0;
+    public static final double kWristD = 0;
+  
   }
 
   public static class ShooterConstants {
@@ -85,11 +87,16 @@ public class Constants {
   }
 
   public static class IntakeConstants {
+    
 
     public static final int kIntakePivotMotorID = 45;
     public static final int kIntakeMotorID = 46;
 
+    public static final double kIntakeAngleRatio = 1/1.5;
     public static final double kIntakeAngleTolerance = 0.5;
+    public static final double kIntakeP = 1;
+    public static final double kIntakeI = 0;
+    public static final double kIntakeD = 0;
   }
 
   public static class AutonConstants {

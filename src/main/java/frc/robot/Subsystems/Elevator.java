@@ -39,19 +39,37 @@ public class Elevator extends SubsystemBase {
     elevatorEncoder = elevatorLeaderMotor.getEncoder();
 
     elevatorLeaderPID = elevatorLeaderMotor.getPIDController();
+
+    elevatorLeaderPID.setP(ElevatorConstants.kElevatorP);
+    elevatorLeaderPID.setI(ElevatorConstants.kElevatorI);
+    elevatorLeaderPID.setD(ElevatorConstants.kElevatorD);
+
+    elevatorLeaderPID.setSmartMotionAllowedClosedLoopError(ElevatorConstants.kElevatorHeightTolerance, 0);
   }
 
   public ElevatorState getElevatorState() {
     return state;
   }
 
+  /*
+   * Current height in inches
+   */
+  public double getElevatorHeight() {
+    double encoderCountsPerRevolution = elevatorEncoder.getCountsPerRevolution();
+
+    double sprocketPitchDiameter = (ElevatorConstants.kElevatorChainPitch * ElevatorConstants.kElevatorSprocket) / Math.PI;
+    double sprocketCircumference = Math.PI * sprocketPitchDiameter;
+
+    double distancePerCount = sprocketCircumference / (encoderCountsPerRevolution * ElevatorConstants.kElevatorRatio);
+
+    return elevatorEncoder.getPosition() * distancePerCount;
+}
+
+
   public void setElevatorHeight(double height) {
     targetHeight = height;
   }
 
-  public double getElevatorHeight() {
-    return elevatorEncoder.getPosition();
-  }
 
   private void updateElevatorState() {
     if (
