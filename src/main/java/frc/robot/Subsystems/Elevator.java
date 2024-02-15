@@ -2,6 +2,7 @@ package frc.robot.Subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants;
@@ -11,10 +12,12 @@ public class Elevator extends SubsystemBase {
 
   private CANSparkMax elevatorLeaderMotor;
   private CANSparkMax elevatorFollowerMotor;
+  private RelativeEncoder elevatorEncoder;
 
   private SparkPIDController elevatorLeaderPID;
 
-  private ElevatorState state = ElevatorState.IDLE;
+  private ElevatorState state = ElevatorState.AT_POSITION;
+
   private double targetHeight;
 
   public Elevator() {
@@ -33,76 +36,45 @@ public class Elevator extends SubsystemBase {
 
     elevatorFollowerMotor.follow(elevatorLeaderMotor, true);
 
+    elevatorEncoder = elevatorLeaderMotor.getEncoder();
+
     elevatorLeaderPID = elevatorLeaderMotor.getPIDController();
-
-    elevatorLeaderPID.setP(ElevatorConstants.kPLeaderElevator);
-    elevatorLeaderPID.setI(ElevatorConstants.kILeaderElevator);
-    elevatorLeaderPID.setD(ElevatorConstants.kDLeaderElevator);
-    elevatorLeaderPID.setIZone(ElevatorConstants.kIzLeaderElevator);
-    elevatorLeaderPID.setFF(ElevatorConstants.KFFLeaderElevator);
-    elevatorLeaderPID.setOutputRange(
-      ElevatorConstants.kMinOutLeaderElevator,
-      ElevatorConstants.kMaxOutLeaderElevator
-    );
-
-    elevatorLeaderPID.setSmartMotionMaxVelocity(
-      ElevatorConstants.kMaxVelLeaderElevator,
-      0
-    );
-    elevatorLeaderPID.setSmartMotionMinOutputVelocity(0, 0);
-    elevatorLeaderPID.setSmartMotionMaxAccel(
-      ElevatorConstants.kMaxAccLeaderElevator,
-      0
-    );
-    elevatorLeaderPID.setSmartMotionAllowedClosedLoopError(0, 0);
   }
 
-  public void stopElevator() {
-    elevatorLeaderMotor.set(0);
-    state = ElevatorState.STOPPED;
-  }
-
-  public double getElevatorHeight() {
-    // needs to return the height of the elevator in inches
-    return 0;
+  public ElevatorState getElevatorState() {
+    return state;
   }
 
   public void setElevatorHeight(double height) {
     targetHeight = height;
-    state = ElevatorState.MOVING;
-    // set the pid tuning here
   }
 
-  public void periodic() {
-    updateElevatorState();
+  public double getElevatorHeight() {
+    return elevatorEncoder.getPosition();
   }
 
-  public void updateElevatorState() {
-    switch (state) {
-      case IDLE:
-        break;
-      case MOVING:
-        if (
-          Math.abs(getElevatorHeight() - targetHeight) <
-          ElevatorConstants.kElevatorHeightTolerance
-        ) {
-          state = ElevatorState.AT_TARGET;
-        }
-        break;
-      case AT_TARGET:
-        // hold position
-        break;
-      case STOPPED:
-        stopElevator();
-        state = ElevatorState.IDLE;
-        break;
+  private void updateElevatorState() {
+    if (
+      Math.abs(getElevatorHeight() - targetHeight) >
+      ElevatorConstants.kElevatorHeightTolerance
+    ) {
+      state = ElevatorState.MOVING;
+    } else {
+      state = ElevatorState.AT_POSITION;
     }
   }
 
+  @Override
+  public void periodic() {
+    elevatorLeaderPID.setReference(
+      targetHeight,
+      CANSparkMax.ControlType.kPosition
+    );
+    updateElevatorState();
+  }
+
   public enum ElevatorState {
-    IDLE,
     MOVING,
-    AT_TARGET,
-    STOPPED,
+    AT_POSITION,
   }
 }

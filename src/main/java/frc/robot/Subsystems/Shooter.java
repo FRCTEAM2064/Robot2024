@@ -20,8 +20,6 @@ public class Shooter extends SubsystemBase {
 
   private ShooterState state = ShooterState.STOP;
 
-  private boolean gotIntoFeed = false;
-  private Integer counter = 0;
   private boolean shooting = false;
 
   public Shooter() {
@@ -120,14 +118,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     updateShooterState();
-    SmartDashboard.putNumber("counter", counter);
-    SmartDashboard.putBoolean("isShooting",shooting);
-    SmartDashboard.putNumber("Feed Timer", feedTimer.get());
-    SmartDashboard.putNumber("Target Feed Time", ShooterConstants.kFeedDuration);
-    SmartDashboard.putNumber("Leader Motor RPM", getShooterSpeed());
-    SmartDashboard.putNumber("Motor Target Speed", ShooterConstants.kShooterTargetSpeed);
-    SmartDashboard.putString("STATE", state.toString());
-    SmartDashboard.putBoolean("got into feed state", gotIntoFeed);
+    SmartDashboard.putBoolean("Shooting",shooting);
   }
 
   public enum ShooterState {

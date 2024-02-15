@@ -1,6 +1,5 @@
 package frc.robot.Subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -16,9 +15,8 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder intakePivotEncoder;
   private SparkPIDController intakePID;
 
-  private IntakeState state = IntakeState.IDLE;
-  private double pivotPosition;
-  private double pivotTarget;
+  private IntakeState state = IntakeState.AT_POSITION;
+  private double intakeTarget;
 
   public Intake() {
     intakePivotMotor =
@@ -40,64 +38,42 @@ public class Intake extends SubsystemBase {
     return state;
   }
 
-  public void stopIntakePivot() {
-    intakePivotMotor.set(0);
-    state = IntakeState.STOPPED;
+  public double getIntakeaAngle(){
+    return intakePivotEncoder.getPosition();
   }
 
-  public double getIntakeAngle() {
-    pivotPosition = intakePivotEncoder.getPosition();
-    return pivotPosition;
+  public void setIntakeAngle(double target){
+    intakeTarget = target;
   }
 
-  public void runIntakeWheels() {
+  public void intake(){
     intakeMotor.set(1);
   }
 
-  public void stopIntakeWheels() {
-    intakeMotor.set(0);
-  }
-
-  public void reverseIntakeWheels() {
+  public void outtake(){
     intakeMotor.set(-1);
   }
 
-  public void setIntakeAngle(double angle) {
-    pivotTarget = angle;
-    state = IntakeState.MOVING;
-    intakePID.setReference(angle, ControlType.kPosition);
-    // pid values and stuff
+  public void stop(){
+    intakeMotor.set(0);
   }
 
-  public void updateIntakeState() {
-    switch (state) {
-      case IDLE:
-        break;
-      case MOVING:
-        if (
-          Math.abs(getIntakeAngle() - pivotTarget) <
-          IntakeConstants.kIntakeAngleTolerance
-        ) {
-          state = IntakeState.AT_POSITION;
-        }
-        break;
-      case AT_POSITION:
-        //hold the position somehow
-        break;
-      case STOPPED:
-        stopIntakePivot();
-        break;
+  public void updateIntakeState(){
+    if (Math.abs(getIntakeaAngle() - intakeTarget) > IntakeConstants.kIntakeAngleTolerance){
+      state = IntakeState.MOVING;
+    } else {
+      state = IntakeState.AT_POSITION;
     }
   }
-
+  
+  @Override
   public void periodic() {
+    intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
     updateIntakeState();
   }
 
   public enum IntakeState {
-    IDLE,
     MOVING,
     AT_POSITION,
-    STOPPED,
   }
 }

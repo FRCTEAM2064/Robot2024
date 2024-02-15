@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import java.io.File;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -18,15 +15,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Commands.SubsystemCommands.WristCmd;
+import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
 import frc.robot.Constants.Constants.OIConstants;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SwerveSubsystem;
 import frc.robot.Subsystems.Wrist;
+import java.io.File;
 
 public class RobotContainer {
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(
+    new File(Filesystem.getDeployDirectory(), "swerve/neo")
+  );
   final Shooter shooter = new Shooter();
   final Wrist wrist = new Wrist();
   private final SendableChooser<Command> autoChooser;
@@ -35,22 +35,33 @@ public class RobotContainer {
   //   OIConstants.kDriverControllerPort
   // );
 
-  XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController operatorController = new XboxController(OIConstants.kOperatorControllerPort);
+  XboxController driverController = new XboxController(
+    OIConstants.kDriverControllerPort
+  );
+  XboxController operatorController = new XboxController(
+    OIConstants.kOperatorControllerPort
+  );
 
   public RobotContainer() {
-
-
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
     Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDeadband),
-        () -> MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDeadband),
-        () -> driverController.getRightX(),
-        () -> driverController.getRightY());
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftY(),
+          OIConstants.kDeadband
+        ),
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftX(),
+          OIConstants.kDeadband
+        ),
+      () -> driverController.getRightTriggerAxis(),
+      () -> driverController.getRightY()
+    );
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -58,18 +69,38 @@ public class RobotContainer {
     // left stick controls translation
     // right stick controls the angular velocity of the robot
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDeadband),
-        () -> MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDeadband),
-        () -> driverController.getRawAxis(2));
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftY(),
+          OIConstants.kDeadband
+        ),
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftX(),
+          OIConstants.kDeadband
+        ),
+      () -> driverController.getRawAxis(2)
+    );
 
     Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
-        () -> MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDeadband),
-        () -> MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDeadband),
-        () -> driverController.getRawAxis(2));
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftY(),
+          OIConstants.kDeadband
+        ),
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftX(),
+          OIConstants.kDeadband
+        ),
+      () -> driverController.getRawAxis(2)
+    );
 
     drivebase.setDefaultCommand(
-        !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-  
+      !RobotBase.isSimulation()
+        ? driveFieldOrientedAnglularVelocity
+        : driveFieldOrientedDirectAngleSim
+    );
 
     configureBindings();
 
@@ -79,14 +110,19 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    new JoystickButton(driverController, OIConstants.kXboxYButton)
+      .onTrue((new InstantCommand(drivebase::zeroGyro)));
 
-     new JoystickButton(driverController, OIConstants.kXboxYButton).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    new JoystickButton(driverController, OIConstants.kXboxXButton)
+      .onTrue(new InstantCommand(shooter::shoot));
 
-    new JoystickButton(driverController, OIConstants.kXboxXButton).onTrue(new InstantCommand(shooter::shoot));
+    new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
+      .onTrue(new WristCmd(wrist, 10));
 
-    new JoystickButton(driverController, OIConstants.kXboxLeftBumper).onTrue(new WristCmd(wrist));
-
-    new JoystickButton(driverController, OIConstants.kXboxRightBumper).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+    new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+      .whileTrue(
+        new RepeatCommand(new InstantCommand(drivebase::lock, drivebase))
+      );
   }
 
   public Command getAutonomousCommand() {

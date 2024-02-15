@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants.WristConstants;
 
@@ -15,7 +14,6 @@ public class Wrist extends SubsystemBase {
   private SparkPIDController wristPID;
 
   private WristState state = WristState.AT_POSITION;
-  private double wristPosition;
   private double wristTarget;
 
   public Wrist() {
@@ -29,43 +27,33 @@ public class Wrist extends SubsystemBase {
     wristPID.setFeedbackDevice(wristEncoder);
 
     wristPID.setP(1);
-    wristPID.setSmartMotionAllowedClosedLoopError(0.001, 0);
+    wristPID.setSmartMotionAllowedClosedLoopError(WristConstants.kwristAngleTolerance, 0);
   }
 
-  public void setWrist(double target) {
+  public void setWristAngle(double target) {
     wristTarget = target;
+  }
+
+  public double getWristAngle(){
+    return wristEncoder.getPosition();
+  }
+
+  public WristState getState(){
+    return state;
+  }
+
+  private void updateWristState(){
+    if (Math.abs(getWristAngle() - wristTarget) > WristConstants.kwristAngleTolerance){
+      state = WristState.MOVING;
+    } else {
+      state = WristState.AT_POSITION;
+    }
   }
 
   @Override
   public void periodic() {
-    //updateWristState();
-    SmartDashboard.putNumber("target", wristTarget);
-    SmartDashboard.putNumber("current", wristEncoder.getPosition());
     wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
-  }
-
-  private void movingState() {}
-
-  private void atPositionState() {
-    if (
-      Math.abs(wristTarget - wristPosition) >
-      WristConstants.kwristAngleTolerance
-    ) {
-      wristPID.setReference(wristPosition, CANSparkMax.ControlType.kPosition);
-    } else {
-      wristPID.setReference(wristPosition, CANSparkMax.ControlType.kPosition);
-    }
-  }
-
-  public void updateWristState() {
-    switch (state) {
-      case MOVING:
-        movingState();
-        break;
-      case AT_POSITION:
-        atPositionState();
-        break;
-    }
+    updateWristState();
   }
 
   public enum WristState {

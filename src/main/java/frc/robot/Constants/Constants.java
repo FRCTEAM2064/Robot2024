@@ -1,7 +1,6 @@
 package frc.robot.Constants;
 
 import com.pathplanner.lib.util.PIDConstants;
-
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -34,7 +33,6 @@ public class Constants {
     public static final int kXboxRightXAxis = 4;
     public static final int kXboxRightYAxis = 5;
   }
-
 
   public static class VisionConstants {
 
@@ -82,8 +80,8 @@ public class Constants {
     public static final int kFollowerMotorID = 36;
     public static final int kFeederMotorID = 37;
 
-    public static final double kShooterTargetSpeed = 4000.0;
-    public static final double kFeedDuration = 5.0;
+    public static final double kShooterTargetSpeed = 5000.0;
+    public static final double kFeedDuration = 2.0;
   }
 
   public static class IntakeConstants {
@@ -91,12 +89,16 @@ public class Constants {
     public static final int kIntakePivotMotorID = 45;
     public static final int kIntakeMotorID = 46;
 
-    public final static double kIntakeAngleTolerance = 0.5;
+    public static final double kIntakeAngleTolerance = 0.5;
   }
 
   public static class AutonConstants {
 
-    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
-    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
+    public static final PIDConstants ANGLE_PID = new PIDConstants(0.4, 0, 0.01);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(
+      0.7,
+      0,
+      0
+    );
   }
 }
