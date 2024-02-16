@@ -17,7 +17,7 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder intakePivotEncoder;
   private SparkPIDController intakePID;
 
-  private DigitalInput homeDigitalInput;
+  private DigitalInput intakeEndstop;
   private DigitalInput hasGamePieceDigitalInput;
 
   private IntakeState state = IntakeState.AT_POSITION;
@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase {
 
     intakePID.setSmartMotionAllowedClosedLoopError(IntakeConstants.kIntakeAngleTolerance, 0);
 
-    homeDigitalInput = new DigitalInput(IntakeConstants.kHomePositionLimitDIO);
+    intakeEndstop = new DigitalInput(IntakeConstants.kHomePositionLimitDIO);
     hasGamePieceDigitalInput = new DigitalInput(IntakeConstants.kHasGamePieceLimitDIO);
   }
 
@@ -53,13 +53,26 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(0.05);
   }
 
+
   public void updateHasGamePiece(){
   hasGamePeice = hasGamePieceDigitalInput.get();
   }
 
   public void zeroIntake(){
-    if (homeDigitalInput.get()){
       intakePivotEncoder.setPosition(0);
+  }
+
+  public void endStopProtection(){
+    if (intakeEndstop.get()){
+      zeroIntake();
+      intakePivotMotor.stopMotor();
+      intakeTarget = 0;
+    }
+  }
+
+  public void home(){
+    if (intakePivotEncoder.getPosition() > 0){
+      intakeMotor.set(-0.05);
     }
   }
 
@@ -99,6 +112,7 @@ public class Intake extends SubsystemBase {
   
   @Override
   public void periodic() {
+    endStopProtection();
     intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
     updateIntakeState();
   }

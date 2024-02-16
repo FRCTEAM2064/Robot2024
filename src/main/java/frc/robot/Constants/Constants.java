@@ -46,7 +46,7 @@ public class Constants {
   }
 
   public static class ElevatorConstants {
-    public static final int kHomePositionLimitDIO = 3;
+    public static final int kElevatorEndstopDIO = 3;
 
     public static final int kLeaderMotorID = 25;
     public static final int kFollowerMotorID = 26;
@@ -69,7 +69,7 @@ public class Constants {
   }
 
   public static class WristConstants {
-    public static final int kHomePositionLimitDIO = 2;
+    public static final int kWristEndstopDIO = 2;
 
     public static final double kWristHandoffAngle = 0;
 

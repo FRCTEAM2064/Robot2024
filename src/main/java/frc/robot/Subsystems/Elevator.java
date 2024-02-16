@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.ElevatorConstants;
@@ -19,6 +21,8 @@ public class Elevator extends SubsystemBase {
   private ElevatorState state = ElevatorState.AT_POSITION;
 
   private double targetHeight;
+
+  private DigitalInput elevatorEndstop;
 
   public Elevator() {
     elevatorLeaderMotor =
@@ -45,10 +49,16 @@ public class Elevator extends SubsystemBase {
     elevatorLeaderPID.setD(ElevatorConstants.kElevatorD);
 
     elevatorLeaderPID.setSmartMotionAllowedClosedLoopError(ElevatorConstants.kElevatorHeightTolerance, 0);
+
+    elevatorEndstop = new DigitalInput(ElevatorConstants.kElevatorEndstopDIO);
   }
 
   public ElevatorState getState() {
     return state;
+  }
+
+  public void zeroElevator(){
+    elevatorEncoder.setPosition(0);
   }
 
   /*
@@ -82,8 +92,23 @@ public class Elevator extends SubsystemBase {
     }
   }
 
+  private void endStopProtection(){
+    if (elevatorEndstop.get()){
+      zeroElevator();
+      elevatorLeaderMotor.stopMotor();
+      targetHeight = 0;
+    }
+  }
+
+  public void home(){
+    if (elevatorEncoder.getPosition() > 0){
+      elevatorFollowerMotor.set(-0.05);
+    }
+  }
+
   @Override
   public void periodic() {
+    endStopProtection();
     elevatorLeaderPID.setReference(
       targetHeight,
       CANSparkMax.ControlType.kPosition

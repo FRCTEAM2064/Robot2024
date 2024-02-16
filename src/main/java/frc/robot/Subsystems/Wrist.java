@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.WristConstants;
@@ -16,6 +18,8 @@ public class Wrist extends SubsystemBase {
 
   private WristState state = WristState.AT_POSITION;
   private double wristTarget;
+
+  private DigitalInput wristEndstop;
 
   public Wrist() {
     wristMotor =
@@ -31,6 +35,8 @@ public class Wrist extends SubsystemBase {
     wristPID.setI(WristConstants.kWristI);
     wristPID.setD(WristConstants.kWristD);
     wristPID.setSmartMotionAllowedClosedLoopError(WristConstants.kwristAngleTolerance, 0);
+
+    wristEndstop = new DigitalInput(WristConstants.kWristEndstopDIO);
   }
 
   public void setWristAngle(double target) {
@@ -39,10 +45,26 @@ public class Wrist extends SubsystemBase {
 
 public double getWristAngle() {
     double angleInDegrees = (wristEncoder.getPosition() * 360);
-    
     return angleInDegrees;
 }
 
+public void zeroWrist(){
+  wristEncoder.setPosition(0);
+}
+
+public void endStopProtection(){
+  if (wristEndstop.get()){
+    zeroWrist();
+    wristMotor.stopMotor();
+    wristTarget = 0;
+  }
+}
+
+public void home(){
+  if (wristEncoder.getPosition() > 0){
+    wristMotor.set(-0.05);
+  }
+}
 
   public WristState getState(){
     return state;
