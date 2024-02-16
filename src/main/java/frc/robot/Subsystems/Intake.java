@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.IntakeConstants;
@@ -15,8 +17,12 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder intakePivotEncoder;
   private SparkPIDController intakePID;
 
+  private DigitalInput homeDigitalInput;
+  private DigitalInput hasGamePieceDigitalInput;
+
   private IntakeState state = IntakeState.AT_POSITION;
   private double intakeTarget;
+  public boolean hasGamePeice = false;
 
   public Intake() {
     intakePivotMotor =
@@ -38,6 +44,23 @@ public class Intake extends SubsystemBase {
     intakePID.setD(IntakeConstants.kIntakeD);
 
     intakePID.setSmartMotionAllowedClosedLoopError(IntakeConstants.kIntakeAngleTolerance, 0);
+
+    homeDigitalInput = new DigitalInput(IntakeConstants.kHomePositionLimitDIO);
+    hasGamePieceDigitalInput = new DigitalInput(IntakeConstants.kHasGamePieceLimitDIO);
+  }
+
+  public void cleanIntake(){
+    intakeMotor.set(0.05);
+  }
+
+  public void updateHasGamePiece(){
+  hasGamePeice = hasGamePieceDigitalInput.get();
+  }
+
+  public void zeroIntake(){
+    if (homeDigitalInput.get()){
+      intakePivotEncoder.setPosition(0);
+    }
   }
 
   public IntakeState getIntakeState() {

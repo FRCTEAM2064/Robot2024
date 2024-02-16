@@ -46,6 +46,7 @@ public class Constants {
   }
 
   public static class ElevatorConstants {
+    public static final int kHomePositionLimitDIO = 3;
 
     public static final int kLeaderMotorID = 25;
     public static final int kFollowerMotorID = 26;
@@ -66,6 +67,7 @@ public class Constants {
   }
 
   public static class WristConstants {
+    public static final int kHomePositionLimitDIO = 2;
 
     public static final int kWristMotorID = 27;
     public static final double kwristAngleTolerance = 0.5;
@@ -88,6 +90,8 @@ public class Constants {
 
   public static class IntakeConstants {
     
+    public static final int kHasGamePieceLimitDIO = 0;
+    public static final int kHomePositionLimitDIO = 1;
 
     public static final int kIntakePivotMotorID = 45;
     public static final int kIntakeMotorID = 46;
@@ -97,6 +101,9 @@ public class Constants {
     public static final double kIntakeP = 1;
     public static final double kIntakeI = 0;
     public static final double kIntakeD = 0;
+
+    public static final double kIntakeFloorAngle = 10;
+    public static final double kIntakeStationAngle = 10;
   }
 
   public static class AutonConstants {
