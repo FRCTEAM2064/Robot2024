@@ -47,7 +47,7 @@ public class Elevator extends SubsystemBase {
     elevatorLeaderPID.setSmartMotionAllowedClosedLoopError(ElevatorConstants.kElevatorHeightTolerance, 0);
   }
 
-  public ElevatorState getElevatorState() {
+  public ElevatorState getState() {
     return state;
   }
 
