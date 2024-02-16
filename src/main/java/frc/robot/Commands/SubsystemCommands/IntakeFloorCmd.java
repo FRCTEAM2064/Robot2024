@@ -6,6 +6,7 @@ import frc.robot.Subsystems.Intake;
 
 public class IntakeFloorCmd extends Command{
     private Intake intake;
+    private Boolean isFinished = false;
 
     public IntakeFloorCmd(Intake intake){
         this.intake = intake;
@@ -17,15 +18,20 @@ public class IntakeFloorCmd extends Command{
             intake.intake();
             intake.setIntakeAngle(IntakeConstants.kIntakeFloorAngle);
         } else {
-            end(isFinished());
+            isFinished = true;
         }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return isFinished;
     }
 
 
     @Override
     public void end(boolean interrupted) {
         intake.stop();
-        intake.setIntakeAngle(0);
+        intake.setIntakeAngle(IntakeConstants.kIntakeHome);
     }
     
 }

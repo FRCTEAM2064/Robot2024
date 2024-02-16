@@ -64,10 +64,14 @@ public class Constants {
     public static final int kElevatorSprocket = 25; 
 
     public static final double kElevatorHeightTolerance = 0.5;
+
+    public static final double kElevatorHandoffHeight = 0;
   }
 
   public static class WristConstants {
     public static final int kHomePositionLimitDIO = 2;
+
+    public static final double kWristHandoffAngle = 0;
 
     public static final int kWristMotorID = 27;
     public static final double kwristAngleTolerance = 0.5;
@@ -86,6 +90,7 @@ public class Constants {
 
     public static final double kShooterTargetSpeed = 5000.0;
     public static final double kFeedDuration = 2.0;
+    public static final int kHasGamePieceLimitDIO = 4;
   }
 
   public static class IntakeConstants {
@@ -104,6 +109,8 @@ public class Constants {
 
     public static final double kIntakeFloorAngle = 10;
     public static final double kIntakeStationAngle = 10;
+    public static final double kIntakeHandOffAngle = 0;
+    public static final double kIntakeHome = 0;
   }
 
   public static class AutonConstants {

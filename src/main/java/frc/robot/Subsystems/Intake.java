@@ -63,7 +63,7 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  public IntakeState getIntakeState() {
+  public IntakeState getState() {
     return state;
   }
 
