@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.SubsystemCommands.IntakeFloorCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
+import frc.robot.Commands.SubsystemCommands.PostionCommands.ZeroAllCmd;
 import frc.robot.Constants.Constants.OIConstants;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
@@ -126,7 +127,7 @@ public class RobotContainer {
 
     new JoystickButton(driverController, OIConstants.kXboxRightBumper)
       .whileTrue(
-        new RepeatCommand(new InstantCommand(drivebase::lock, drivebase))
+        new ZeroAllCmd(elevator, wrist, intake)
       );
 
     new JoystickButton(driverController, OIConstants.kXboxLeftTriggerAxis)
