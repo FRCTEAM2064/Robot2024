@@ -113,6 +113,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     endStopProtection();
+    updateHasGamePiece();
     intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
     updateIntakeState();
   }

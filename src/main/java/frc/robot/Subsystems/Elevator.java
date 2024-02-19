@@ -102,7 +102,7 @@ public class Elevator extends SubsystemBase {
 
   public void home(){
     if (elevatorEncoder.getPosition() > 0){
-      elevatorFollowerMotor.set(-0.05);
+      elevatorLeaderMotor.set(-0.05);
     }
   }
 

@@ -80,6 +80,7 @@ public void home(){
 
   @Override
   public void periodic() {
+    endStopProtection();
     wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
     updateWristState();
   }
