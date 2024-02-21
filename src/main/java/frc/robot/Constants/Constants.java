@@ -46,7 +46,7 @@ public class Constants {
   }
 
   public static class ElevatorConstants {
-    public static final int kElevatorEndstopDIO = 3;
+    public static final int kElevatorEndstopDIO = 0;
 
     public static final int kLeaderMotorID = 25;
     public static final int kFollowerMotorID = 26;
@@ -101,7 +101,7 @@ public class Constants {
   public static class IntakeConstants {
 
     
-    public static final int kHasGamePieceLimitDIO = 0;
+    public static final int kHasGamePieceLimitDIO = 3;
     public static final int kHomePositionLimitDIO = 1;
 
     public static final int kIntakePivotMotorID = 45;
