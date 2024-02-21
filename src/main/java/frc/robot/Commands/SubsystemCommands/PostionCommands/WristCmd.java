@@ -1,9 +1,9 @@
 package frc.robot.Commands.SubsystemCommands.PostionCommands;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Subsystems.Wrist;
 
-public class WristCmd extends Command {
+public class WristCmd extends InstantCommand {
 
   private Wrist wrist;
   private double angle;

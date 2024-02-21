@@ -1,9 +1,9 @@
 package frc.robot.Commands.SubsystemCommands.PostionCommands;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Subsystems.Intake;
 
-public class IntakeCmd extends Command {
+public class IntakeCmd extends InstantCommand {
 
   private Intake intake;
   private double angle;

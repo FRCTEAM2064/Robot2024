@@ -19,7 +19,7 @@ public class ZeroAllCmd extends InstantCommand{
     @Override
     public void execute() {
         elevator.zeroElevator();
-        intake.zeroIntake();
-        wrist.zeroWrist();
+       // intake.zeroIntake();
+       // wrist.zeroWrist();
      }
 }

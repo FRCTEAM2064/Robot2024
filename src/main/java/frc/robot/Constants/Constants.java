@@ -71,14 +71,18 @@ public class Constants {
   public static class WristConstants {
     public static final int kWristEndstopDIO = 2;
 
-    public static final double kWristHandoffAngle = 0;
+    public static final double kWristHandoffAngle = 60;
 
     public static final int kWristMotorID = 27;
-    public static final double kwristAngleTolerance = 0.5;
+    public static final double kwristAngleTolerance = 0.002;
 
-    public static final double kWristP = 1;
+    public static final double kWristP = 4;
     public static final double kWristI = 0;
     public static final double kWristD = 0;
+
+    
+    public static final double kEncoderPositionPIDMinInput = 0;
+    public static final double kEncoderPositionPIDMaxInput = 1;
   
   }
 
@@ -88,12 +92,14 @@ public class Constants {
     public static final int kFollowerMotorID = 36;
     public static final int kFeederMotorID = 37;
 
-    public static final double kShooterTargetSpeed = 5000.0;
+    public static final double kShooterTargetSpeed = 6500.0;
     public static final double kFeedDuration = 2.0;
     public static final int kHasGamePieceLimitDIO = 4;
+
   }
 
   public static class IntakeConstants {
+
     
     public static final int kHasGamePieceLimitDIO = 0;
     public static final int kHomePositionLimitDIO = 1;
@@ -101,9 +107,9 @@ public class Constants {
     public static final int kIntakePivotMotorID = 45;
     public static final int kIntakeMotorID = 46;
 
-    public static final double kIntakeAngleRatio = 1/1.5;
+    public static final double kIntakeConversion = 16 / 24;
     public static final double kIntakeAngleTolerance = 0.5;
-    public static final double kIntakeP = 1;
+    public static final double kIntakeP =   8;
     public static final double kIntakeI = 0;
     public static final double kIntakeD = 0;
 
@@ -111,6 +117,7 @@ public class Constants {
     public static final double kIntakeStationAngle = 10;
     public static final double kIntakeHandOffAngle = 0;
     public static final double kIntakeHome = 0;
+
   }
 
   public static class AutonConstants {

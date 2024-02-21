@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.SubsystemCommands.IntakeFloorCmd;
+import frc.robot.Commands.SubsystemCommands.PostionCommands.IntakeCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.ZeroAllCmd;
 import frc.robot.Constants.Constants.OIConstants;
@@ -65,8 +66,8 @@ public class RobotContainer {
           driverController.getLeftX(),
           OIConstants.kDeadband
         ),
-      () -> driverController.getRightX(),
-      () -> driverController.getRightY()
+      () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis),
+      () -> driverController.getRawAxis(OIConstants.kXboxRightYAxis)
     );
 
     // Applies deadbands and inverts controls because joysticks
@@ -85,7 +86,7 @@ public class RobotContainer {
           driverController.getLeftX(),
           OIConstants.kDeadband
         ),
-      () -> driverController.getRawAxis(2)
+      () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis)
     );
 
     Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
@@ -99,7 +100,7 @@ public class RobotContainer {
           driverController.getLeftX(),
           OIConstants.kDeadband
         ),
-      () -> driverController.getRawAxis(2)
+      () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis)
     );
 
     drivebase.setDefaultCommand(
@@ -116,23 +117,41 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(driverController, OIConstants.kXboxYButton)
-      .onTrue((new InstantCommand(drivebase::zeroGyro)));
+    // new JoystickButton(driverController, OIConstants.kXboxYButton)
+    //   .onTrue((new InstantCommand(drivebase::zeroGyro)));
 
     new JoystickButton(driverController, OIConstants.kXboxXButton)
       .onTrue(new InstantCommand(shooter::shoot));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
-      .onTrue(new WristCmd(wrist, 10));
+      .onTrue(new WristCmd(wrist, 0));
+
+      new JoystickButton(driverController, OIConstants.kXboxYButton)
+      .onTrue(new IntakeCmd(intake, 0));
+
+      
+      new JoystickButton(driverController, OIConstants.kXboxAButton)
+      .onTrue(new IntakeCmd(intake, 45));
+
+    
+
+    // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+    //   .whileTrue(
+    //     new ZeroAllCmd(elevator, wrist, intake)
+    //   );
+
+    // new JoystickButton(driverController, OIConstants.kXboxLeftTriggerAxis)
+    // .whileTrue(new IntakeFloorCmd(intake));
 
     new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-      .whileTrue(
-        new ZeroAllCmd(elevator, wrist, intake)
-      );
+    .onTrue(new WristCmd(wrist, 90));
 
-    new JoystickButton(driverController, OIConstants.kXboxLeftTriggerAxis)
-    .whileTrue(new IntakeFloorCmd(intake));
+
+    // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+    // .onTrue(new RepeatCommand(new InstantCommand(drivebase::lock)));
   }
+
+
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();

@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.ElevatorConstants;
@@ -104,6 +105,10 @@ public class Elevator extends SubsystemBase {
     if (elevatorEncoder.getPosition() > 0){
       elevatorLeaderMotor.set(-0.05);
     }
+  }
+
+  public void debugValues(){
+    SmartDashboard.putNumber("Target Height Encoder", targetHeight);
   }
 
   @Override

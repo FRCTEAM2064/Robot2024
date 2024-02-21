@@ -52,11 +52,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feed() {
-    feederMotor.set(1);
+    feederMotor.set(-1.0);
   }
 
   public void intake(){
-    feederMotor.set(0.5);
+    feederMotor.set(1.0);
   }
 
   public void shoot() {
@@ -84,7 +84,7 @@ public class Shooter extends SubsystemBase {
       feedTimer.reset();
       feedTimer.start();
 
-      feederMotor.set(1);
+      feederMotor.set(-1.0);
       state = ShooterState.FEEDING;
     } else {
       leaderShooterMotor.set(1);
@@ -131,12 +131,25 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  public void debugValues(){
+    SmartDashboard.putNumber("Feed Timer", feedTimer.get());
+    SmartDashboard.putBoolean("Shooting", shooting);
+    SmartDashboard.putBoolean("Piece", hasGamePeice);
+    SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putNumber("Shooter Speed", getShooterSpeed());
+  }
+
+  public void competitionValues(){
+
+  }
+
 
   @Override
   public void periodic() {
     updateShooterState();
     updateHasGamePiece();
-    SmartDashboard.putBoolean("Shooting",shooting);
+    debugValues();
+    // competitionValues();
   }
 
   public enum ShooterState {
