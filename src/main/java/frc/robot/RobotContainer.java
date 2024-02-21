@@ -137,6 +137,9 @@ public class RobotContainer {
       new JoystickButton(driverController, OIConstants.kXboxRightBumper)
       .onTrue(new ElevatorCmd(elevator, 2));
 
+      new JoystickButton(driverController, OIConstants.kXboxXButton)
+      .onTrue(new InstantCommand(elevator::zeroElevator));
+
     
 
     // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
