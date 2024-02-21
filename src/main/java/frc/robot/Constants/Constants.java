@@ -83,6 +83,8 @@ public class Constants {
     
     public static final double kEncoderPositionPIDMinInput = 0;
     public static final double kEncoderPositionPIDMaxInput = 1;
+
+    public static final double kWristFF = 0.1;
   
   }
 

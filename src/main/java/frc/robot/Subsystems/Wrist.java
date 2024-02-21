@@ -35,6 +35,7 @@ public class Wrist extends SubsystemBase {
     wristPID.setP(WristConstants.kWristP);
     wristPID.setI(WristConstants.kWristI);
     wristPID.setD(WristConstants.kWristD);
+    wristPID.setFF(WristConstants.kWristFF);
     wristPID.setSmartMotionAllowedClosedLoopError(WristConstants.kwristAngleTolerance, 0);
 
     wristPID.setPositionPIDWrappingEnabled(true);

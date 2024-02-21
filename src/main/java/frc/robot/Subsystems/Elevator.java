@@ -78,7 +78,14 @@ public class Elevator extends SubsystemBase {
 
 
   public void setElevatorHeight(double height) {
-    targetHeight = height;
+    double encoderCountsPerRevolution = elevatorEncoder.getCountsPerRevolution();
+
+    double sprocketPitchDiameter = (ElevatorConstants.kElevatorChainPitch * ElevatorConstants.kElevatorSprocket) / Math.PI;
+    double sprocketCircumference = Math.PI * sprocketPitchDiameter;
+
+    double distancePerCount = sprocketCircumference / (encoderCountsPerRevolution * ElevatorConstants.kElevatorRatio);
+
+    targetHeight = height / distancePerCount;
   }
 
 
@@ -109,11 +116,12 @@ public class Elevator extends SubsystemBase {
 
   public void debugValues(){
     SmartDashboard.putNumber("Target Height Encoder", targetHeight);
+    SmartDashboard.putNumber("Elevator Encoder val", elevatorEncoder.getPosition());
   }
 
   @Override
   public void periodic() {
-    endStopProtection();
+    //endStopProtection();
     elevatorLeaderPID.setReference(
       targetHeight,
       CANSparkMax.ControlType.kPosition

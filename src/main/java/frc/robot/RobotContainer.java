@@ -13,12 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Commands.SubsystemCommands.IntakeFloorCmd;
+import frc.robot.Commands.SubsystemCommands.PostionCommands.ElevatorCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.IntakeCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
-import frc.robot.Commands.SubsystemCommands.PostionCommands.ZeroAllCmd;
 import frc.robot.Constants.Constants.OIConstants;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
@@ -133,6 +131,12 @@ public class RobotContainer {
       new JoystickButton(driverController, OIConstants.kXboxAButton)
       .onTrue(new IntakeCmd(intake, 45));
 
+      // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+      // .onTrue(new WristCmd(wrist, 90));
+
+      new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+      .onTrue(new ElevatorCmd(elevator, 2));
+
     
 
     // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
@@ -143,8 +147,7 @@ public class RobotContainer {
     // new JoystickButton(driverController, OIConstants.kXboxLeftTriggerAxis)
     // .whileTrue(new IntakeFloorCmd(intake));
 
-    new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-    .onTrue(new WristCmd(wrist, 90));
+
 
 
     // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
