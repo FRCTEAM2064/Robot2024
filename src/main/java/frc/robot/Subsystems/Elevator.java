@@ -127,6 +127,7 @@ public class Elevator extends SubsystemBase {
       CANSparkMax.ControlType.kPosition
     );
     updateElevatorState();
+    SmartDashboard.putBoolean("Elevator Switch", elevatorEndstop.get());
   }
 
   public enum ElevatorState {

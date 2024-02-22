@@ -52,7 +52,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feed() {
-    feederMotor.set(-1.0);
+    feederMotor.set(1.0);
   }
 
   public void intake(){

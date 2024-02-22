@@ -118,8 +118,8 @@ public class RobotContainer {
     // new JoystickButton(driverController, OIConstants.kXboxYButton)
     //   .onTrue((new InstantCommand(drivebase::zeroGyro)));
 
-    // new JoystickButton(driverController, OIConstants.kXboxXButton)
-    //   .onTrue(new InstantCommand(shooter::shoot));
+    new JoystickButton(driverController, OIConstants.kXboxXButton)
+      .onTrue(new InstantCommand(shooter::shoot));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
       .onTrue(new WristCmd(wrist, 0));
@@ -137,8 +137,8 @@ public class RobotContainer {
       new JoystickButton(driverController, OIConstants.kXboxRightBumper)
       .onTrue(new ElevatorCmd(elevator, 2));
 
-      new JoystickButton(driverController, OIConstants.kXboxXButton)
-      .onTrue(new InstantCommand(elevator::zeroElevator));
+      // new JoystickButton(driverController, OIConstants.kXboxXButton)
+      // .onTrue(new InstantCommand(elevator::zeroElevator));
 
     
 
