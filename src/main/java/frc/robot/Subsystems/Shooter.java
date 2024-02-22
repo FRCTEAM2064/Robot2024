@@ -38,6 +38,7 @@ public class Shooter extends SubsystemBase {
     followerShooterMotor.follow(leaderShooterMotor, true);
 
     leaderShooterEncoder = leaderShooterMotor.getEncoder();
+    feederMotor.setInverted(true);
     feederMotor.getEncoder();
 
     hasGamePieceDigitalInput = new DigitalInput(ShooterConstants.kHasGamePieceLimitDIO);
@@ -84,7 +85,7 @@ public class Shooter extends SubsystemBase {
       feedTimer.reset();
       feedTimer.start();
 
-      feederMotor.set(-1.0);
+      feederMotor.set(1.0);
       state = ShooterState.FEEDING;
     } else {
       leaderShooterMotor.set(1);
@@ -148,7 +149,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     updateShooterState();
     updateHasGamePiece();
-    debugValues();
+    // debugValues();
     // competitionValues();
   }
 

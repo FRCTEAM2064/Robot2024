@@ -123,18 +123,24 @@ public class RobotContainer {
 
     new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
       .onTrue(new WristCmd(wrist, 0));
+    
+      new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+      .onTrue(new WristCmd(wrist, 90));
 
-      new JoystickButton(driverController, OIConstants.kXboxYButton)
-      .onTrue(new IntakeCmd(intake, 0));
+      // new JoystickButton(driverController, OIConstants.kXboxYButton)
+      // .onTrue(new IntakeCmd(intake, 0));
 
       
-      new JoystickButton(driverController, OIConstants.kXboxAButton)
-      .onTrue(new IntakeCmd(intake, 45));
+      // new JoystickButton(driverController, OIConstants.kXboxAButton)
+      // .onTrue(new IntakeCmd(intake, 45));
 
       // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
       // .onTrue(new WristCmd(wrist, 90));
 
-      new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+      new JoystickButton(driverController, OIConstants.kXboxYButton)
+      .onTrue(new InstantCommand(elevator::home));
+
+      new JoystickButton(driverController, OIConstants.kXboxAButton)
       .onTrue(new ElevatorCmd(elevator, 2));
 
       // new JoystickButton(driverController, OIConstants.kXboxXButton)

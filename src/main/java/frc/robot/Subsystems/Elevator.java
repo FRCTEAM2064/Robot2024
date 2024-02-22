@@ -52,6 +52,7 @@ public class Elevator extends SubsystemBase {
     elevatorLeaderPID.setSmartMotionAllowedClosedLoopError(ElevatorConstants.kElevatorHeightTolerance, 0);
 
     elevatorEndstop = new DigitalInput(ElevatorConstants.kElevatorEndstopDIO);
+    debugValues();
   }
 
   public ElevatorState getState() {
@@ -101,7 +102,7 @@ public class Elevator extends SubsystemBase {
   }
 
   private void endStopProtection(){
-    if (elevatorEndstop.get()){
+    if (!elevatorEndstop.get()){
       zeroElevator();
       elevatorLeaderMotor.stopMotor();
       targetHeight = 0;
@@ -109,25 +110,36 @@ public class Elevator extends SubsystemBase {
   }
 
   public void home(){
-    if (elevatorEncoder.getPosition() > 0){
-      elevatorLeaderMotor.set(-0.05);
-    }
+    // if (elevatorEncoder.getPosition() > 0){
+    //   elevatorLeaderMotor.set(-0.01);
+    // }
+    elevatorLeaderMotor.set(-0.1);
   }
 
   public void debugValues(){
     SmartDashboard.putNumber("Target Height Encoder", targetHeight);
     SmartDashboard.putNumber("Elevator Encoder val", elevatorEncoder.getPosition());
+    SmartDashboard.putBoolean("Elevator Switch", elevatorEndstop.get());
+    SmartDashboard.putNumber("Elevator Height", getElevatorHeight());
+    SmartDashboard.putNumber("Elevator Target Height", targetHeight);
+    SmartDashboard.putString("Elevator State", state.toString());
+
+
+
   }
 
   @Override
   public void periodic() {
-    //endStopProtection();
-    elevatorLeaderPID.setReference(
-      targetHeight,
-      CANSparkMax.ControlType.kPosition
-    );
+    endStopProtection();
+    // elevatorLeaderPID.setReference(
+    //   targetHeight,
+    //   CANSparkMax.ControlType.kPosition
+    // );
     updateElevatorState();
-    SmartDashboard.putBoolean("Elevator Switch", elevatorEndstop.get());
+    debugValues();
+    System.out.println(elevatorEndstop.get());
+    System.out.println(elevatorEncoder.getPosition());
+
   }
 
   public enum ElevatorState {

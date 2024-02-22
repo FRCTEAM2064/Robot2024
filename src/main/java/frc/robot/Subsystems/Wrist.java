@@ -109,7 +109,7 @@ public void home(){
     //endStopProtection();
     wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
     updateWristState();
-    debugValues();
+    // debugValues();
     //competitionValues();
   }
 

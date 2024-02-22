@@ -59,7 +59,7 @@ public class Constants {
     public static final double kElevatorI = 0;
     public static final double kElevatorD = 0;
 
-    public static final double kElevatorRatio = 1/25;
+    public static final double kElevatorRatio = .04;
     public static final double kElevatorChainPitch = 0.25;
     public static final int kElevatorSprocket = 25; 
 
@@ -109,7 +109,7 @@ public class Constants {
     public static final int kIntakePivotMotorID = 45;
     public static final int kIntakeMotorID = 46;
 
-    public static final double kIntakeConversion = 16 / 24;
+    public static final double kIntakeConversion = .66667;
     public static final double kIntakeAngleTolerance = 0.5;
     public static final double kIntakeP =   8;
     public static final double kIntakeI = 0;

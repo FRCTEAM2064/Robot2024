@@ -134,7 +134,7 @@ public class Intake extends SubsystemBase {
     updateHasGamePiece();
     intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
     updateIntakeState();
-    debugValues();
+    // debugValues();
   }
 
   public enum IntakeState {
