@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,6 +74,7 @@ public class Elevator extends SubsystemBase {
 
   public void setElevatorHeight(double height) {
     targetHeight = height / ElevatorConstants.kElevatorRatio;
+    elevatorLeaderPID.setReference(targetHeight, ControlType.kPosition);
   }
 
 
