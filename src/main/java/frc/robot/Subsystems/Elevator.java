@@ -38,11 +38,12 @@ public class Elevator extends SubsystemBase {
         MotorType.kBrushless
       );
 
-    elevatorLeaderMotor.getEncoder();
 
     elevatorFollowerMotor.follow(elevatorLeaderMotor, true);
 
     elevatorEncoder = elevatorLeaderMotor.getEncoder();
+
+    elevatorEncoder.setPositionConversionFactor(1);
 
     elevatorLeaderPID = elevatorLeaderMotor.getPIDController();
 
