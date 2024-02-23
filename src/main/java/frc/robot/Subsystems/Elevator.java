@@ -67,26 +67,12 @@ public class Elevator extends SubsystemBase {
    * Current height in inches
    */
   public double getElevatorHeight() {
-    double encoderCountsPerRevolution = elevatorEncoder.getCountsPerRevolution();
-
-    double sprocketPitchDiameter = (ElevatorConstants.kElevatorChainPitch * ElevatorConstants.kElevatorSprocket) / Math.PI;
-    double sprocketCircumference = Math.PI * sprocketPitchDiameter;
-
-    double distancePerCount = sprocketCircumference / (encoderCountsPerRevolution * ElevatorConstants.kElevatorRatio);
-
-    return elevatorEncoder.getPosition() * distancePerCount;
+    return elevatorEncoder.getPosition() * ElevatorConstants.kElevatorRatio;
 }
 
 
   public void setElevatorHeight(double height) {
-    double encoderCountsPerRevolution = elevatorEncoder.getCountsPerRevolution();
-
-    double sprocketPitchDiameter = (ElevatorConstants.kElevatorChainPitch * ElevatorConstants.kElevatorSprocket) / Math.PI;
-    double sprocketCircumference = Math.PI * sprocketPitchDiameter;
-
-    double distancePerCount = sprocketCircumference / (encoderCountsPerRevolution * ElevatorConstants.kElevatorRatio);
-
-    targetHeight = height / distancePerCount;
+    targetHeight = height / ElevatorConstants.kElevatorRatio;
   }
 
 
