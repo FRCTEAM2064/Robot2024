@@ -55,13 +55,13 @@ public class Constants {
     public static final int kElevatorMax = 100;
     public static final int kElevatorClimb = 0;
 
-    public static final double kElevatorP = 1;
+    public static final double kElevatorP = 0.1;
     public static final double kElevatorI = 0;
     public static final double kElevatorD = 0;
 
     public static final double kElevatorRatio = .04;
     public static final double kElevatorChainPitch = 0.25;
-    public static final int kElevatorSprocket = 25; 
+    public static final int kElevatorSprocket = 22; 
 
     public static final double kElevatorHeightTolerance = 0.5;
 
@@ -71,7 +71,7 @@ public class Constants {
   public static class WristConstants {
     public static final int kWristEndstopDIO = 2;
 
-    public static final double kWristHandoffAngle = 60;
+    public static final double kWristHandoffAngle = 25;
 
     public static final int kWristMotorID = 27;
     public static final double kwristAngleTolerance = 0.002;
@@ -85,6 +85,8 @@ public class Constants {
     public static final double kEncoderPositionPIDMaxInput = 1;
 
     public static final double kWristFF = 0.1;
+
+    public static final double kWristOffsetAngle = 25;
   
   }
 

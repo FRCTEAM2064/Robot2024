@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,6 +54,8 @@ public class Elevator extends SubsystemBase {
 
     elevatorEndstop = new DigitalInput(ElevatorConstants.kElevatorEndstopDIO);
     debugValues();
+
+    elevatorEncoder.setPositionConversionFactor(1);
   }
 
   public ElevatorState getState() {
@@ -67,26 +70,13 @@ public class Elevator extends SubsystemBase {
    * Current height in inches
    */
   public double getElevatorHeight() {
-    double encoderCountsPerRevolution = elevatorEncoder.getCountsPerRevolution();
-
-    double sprocketPitchDiameter = (ElevatorConstants.kElevatorChainPitch * ElevatorConstants.kElevatorSprocket) / Math.PI;
-    double sprocketCircumference = Math.PI * sprocketPitchDiameter;
-
-    double distancePerCount = sprocketCircumference / (encoderCountsPerRevolution * ElevatorConstants.kElevatorRatio);
-
-    return elevatorEncoder.getPosition() * distancePerCount;
+    return elevatorEncoder.getPosition() / 4.5;
 }
 
 
   public void setElevatorHeight(double height) {
-    double encoderCountsPerRevolution = elevatorEncoder.getCountsPerRevolution();
-
-    double sprocketPitchDiameter = (ElevatorConstants.kElevatorChainPitch * ElevatorConstants.kElevatorSprocket) / Math.PI;
-    double sprocketCircumference = Math.PI * sprocketPitchDiameter;
-
-    double distancePerCount = sprocketCircumference / (encoderCountsPerRevolution * ElevatorConstants.kElevatorRatio);
-
-    targetHeight = height / distancePerCount;
+    height = height * 4.5;
+    elevatorLeaderPID.setReference(height, ControlType.kPosition);
   }
 
 
@@ -113,7 +103,7 @@ public class Elevator extends SubsystemBase {
     // if (elevatorEncoder.getPosition() > 0){
     //   elevatorLeaderMotor.set(-0.01);
     // }
-    elevatorLeaderMotor.set(-0.1);
+    elevatorLeaderMotor.set(-0.05);
   }
 
   public void debugValues(){

@@ -54,7 +54,7 @@ public class Wrist extends SubsystemBase {
   }
 
 public double getWristAngle() {
-  return wristEncoder.getPosition() * 360;
+  return wristEncoder.getPosition() * 360 + WristConstants.kWristOffsetAngle;
 }
 
 public double getWristEncoderVal(){
@@ -109,7 +109,7 @@ public void home(){
     //endStopProtection();
     wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
     updateWristState();
-    // debugValues();
+     debugValues();
     //competitionValues();
   }
 

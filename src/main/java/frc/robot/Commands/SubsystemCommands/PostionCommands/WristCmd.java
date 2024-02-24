@@ -15,6 +15,6 @@ public class WristCmd extends InstantCommand {
 
   @Override
   public void execute() {
-    wrist.setWristAngle(angle);
+    wrist.setWristAngle(angle - 25);
   }
 }

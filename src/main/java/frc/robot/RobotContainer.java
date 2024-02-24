@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Commands.SubsystemCommands.IntakeFloorCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.ElevatorCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.IntakeCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
@@ -115,55 +116,26 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // new JoystickButton(driverController, OIConstants.kXboxYButton)
-    //   .onTrue((new InstantCommand(drivebase::zeroGyro)));
 
     new JoystickButton(driverController, OIConstants.kXboxXButton)
       .onTrue(new InstantCommand(shooter::shoot));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
-      .onTrue(new WristCmd(wrist, 0));
+      .onTrue(new WristCmd(wrist, 45));
+
+    new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+    .onTrue(new WristCmd(wrist, 0));
     
-      new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-      .onTrue(new WristCmd(wrist, 90));
+    new JoystickButton(driverController, OIConstants.kXboxAButton)
+    .whileTrue(new IntakeFloorCmd(intake));
 
-      // new JoystickButton(driverController, OIConstants.kXboxYButton)
-      // .onTrue(new IntakeCmd(intake, 0));
+    new JoystickButton(driverController, OIConstants.kXboxBButton)
+    .onTrue(new ElevatorCmd(elevator, 6));
 
-      
-      // new JoystickButton(driverController, OIConstants.kXboxAButton)
-      // .onTrue(new IntakeCmd(intake, 45));
+    new JoystickButton(driverController, OIConstants.kXboxYButton)
+    .onTrue(new ElevatorCmd(elevator, 0));
 
-      // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-      // .onTrue(new WristCmd(wrist, 90));
-
-      new JoystickButton(driverController, OIConstants.kXboxYButton)
-      .onTrue(new InstantCommand(elevator::home));
-
-      new JoystickButton(driverController, OIConstants.kXboxAButton)
-      .onTrue(new ElevatorCmd(elevator, 2));
-
-      // new JoystickButton(driverController, OIConstants.kXboxXButton)
-      // .onTrue(new InstantCommand(elevator::zeroElevator));
-
-    
-
-    // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-    //   .whileTrue(
-    //     new ZeroAllCmd(elevator, wrist, intake)
-    //   );
-
-    // new JoystickButton(driverController, OIConstants.kXboxLeftTriggerAxis)
-    // .whileTrue(new IntakeFloorCmd(intake));
-
-
-
-
-    // new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-    // .onTrue(new RepeatCommand(new InstantCommand(drivebase::lock)));
   }
-
-
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();

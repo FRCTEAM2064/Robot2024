@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +35,8 @@ public class Intake extends SubsystemBase {
     intakeMotor =
       new CANSparkMax(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
 
+      intakeMotor.setInverted(false);
+      intakeMotor.setIdleMode(IdleMode.kBrake);
     intakePivotEncoder =
       intakePivotMotor.getAbsoluteEncoder();
 
@@ -64,20 +67,8 @@ public class Intake extends SubsystemBase {
 
 
   public void updateHasGamePiece(){
-  hasGamePeice = hasGamePieceDigitalInput.get();
+  hasGamePeice = !hasGamePieceDigitalInput.get();
   }
-
-  // public void zeroIntake(){
-  //     intakePivotEncoder.setZeroOffset(-intakePivotEncoder.getPosition());
-  // }
-
-  // public void endStopProtection(){
-  //   if (intakeEndstop.get()){
-  //     zeroIntake();
-  //     intakePivotMotor.stopMotor();
-  //     intakeTarget = 0;
-  //   }
-  // }
 
   public void home(){
     if (intakePivotEncoder.getPosition() > 0){
@@ -94,14 +85,13 @@ public class Intake extends SubsystemBase {
     return angleInDegrees;
 }
 
-
   public void setIntakeAngle(double target){
     intakeTargetAngle = target;
     intakeTarget = target / 360;
   }
 
   public void intake(){
-    intakeMotor.set(1);
+    intakeMotor.set(0.25);
   }
 
   public void outtake(){
