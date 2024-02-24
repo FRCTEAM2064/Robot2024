@@ -14,11 +14,11 @@ public class IntakeFloorCmd extends Command{
 
     @Override
     public void execute() {
-       if (!intake.hasGamePeice){
+       if (!intake.hasGamePiece){
             intake.intake();
-          // intake.setIntakeAngle(IntakeConstants.kIntakeFloorAngle);
+          intake.setIntakeAngle(IntakeConstants.kIntakeFloorAngle);
        } else {
-
+            end(isFinished());
        }
     }
 
@@ -27,7 +27,7 @@ public class IntakeFloorCmd extends Command{
     @Override
     public void end(boolean interrupted) {
         intake.stop();
-       // intake.setIntakeAngle(IntakeConstants.kIntakeHome);
+       intake.setIntakeAngle(IntakeConstants.kIntakeHome);
     }
     
 }

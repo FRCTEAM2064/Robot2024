@@ -66,6 +66,10 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  public ShooterState getState(){
+    return state;
+  }
+
   public void updateHasGamePiece(){
     hasGamePeice = hasGamePieceDigitalInput.get();
    }
@@ -149,7 +153,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     updateShooterState();
     updateHasGamePiece();
-    // debugValues();
+    debugValues();
     // competitionValues();
   }
 

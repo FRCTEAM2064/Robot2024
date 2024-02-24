@@ -38,7 +38,7 @@ public class HandoffCmd extends Command {
 
   @Override
   public void execute() {
-    if (!intake.hasGamePeice) {
+    if (!intake.hasGamePiece) {
       cancel();
     }
 

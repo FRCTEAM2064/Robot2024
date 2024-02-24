@@ -71,12 +71,12 @@ public class Elevator extends SubsystemBase {
    * Current height in inches
    */
   public double getElevatorHeight() {
-    return elevatorEncoder.getPosition() * ElevatorConstants.kElevatorRatio;
+    return elevatorEncoder.getPosition() / ElevatorConstants.kElevatorRatio;
 }
 
 
   public void setElevatorHeight(double height) {
-    targetHeight = height / ElevatorConstants.kElevatorRatio;
+    targetHeight = height * ElevatorConstants.kElevatorRatio;
     elevatorLeaderPID.setReference(targetHeight, ControlType.kPosition);
   }
 
@@ -117,6 +117,7 @@ public class Elevator extends SubsystemBase {
 
 
 
+
   }
 
   @Override
@@ -128,8 +129,8 @@ public class Elevator extends SubsystemBase {
     // );
     updateElevatorState();
     debugValues();
-    System.out.println(elevatorEndstop.get());
-    System.out.println(elevatorEncoder.getPosition());
+    // System.out.println(elevatorEndstop.get());
+    // System.out.println(elevatorEncoder.getPosition());
 
   }
 
