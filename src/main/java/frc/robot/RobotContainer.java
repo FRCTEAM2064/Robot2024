@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.SubsystemCommands.IntakeFloorCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.ElevatorCmd;
-import frc.robot.Commands.SubsystemCommands.PostionCommands.IntakeCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
 import frc.robot.Constants.Constants.OIConstants;
 import frc.robot.Subsystems.Elevator;
