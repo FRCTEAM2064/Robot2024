@@ -15,9 +15,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.SubsystemCommands.IntakeFloorCmd;
+import frc.robot.Commands.SubsystemCommands.ShootFromIntakeCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.ElevatorCmd;
+import frc.robot.Commands.SubsystemCommands.PostionCommands.IntakeCmd;
 import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
 import frc.robot.Constants.Constants.OIConstants;
+import frc.robot.Constants.Constants.WristConstants;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
@@ -53,20 +56,20 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
-    Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-      () ->
-        MathUtil.applyDeadband(
-          driverController.getLeftY(),
-          OIConstants.kDeadband
-        ),
-      () ->
-        MathUtil.applyDeadband(
-          driverController.getLeftX(),
-          OIConstants.kDeadband
-        ),
-      () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis),
-      () -> driverController.getRawAxis(OIConstants.kXboxRightYAxis)
-    );
+    // Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+    //   () ->
+    //     MathUtil.applyDeadband(
+    //       driverController.getLeftY(),
+    //       OIConstants.kDeadband
+    //     ),
+    //   () ->
+    //     MathUtil.applyDeadband(
+    //       driverController.getLeftX(),
+    //       OIConstants.kDeadband
+    //     ),
+    //   () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis),
+    //   () -> driverController.getRawAxis(OIConstants.kXboxRightYAxis)
+    // );
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -116,17 +119,17 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    new JoystickButton(driverController, OIConstants.kXboxXButton)
-      .onTrue(new InstantCommand(shooter::shoot));
+    // new JoystickButton(driverController, OIConstants.kXboxXButton)
+    //   .onTrue(new InstantCommand(shooter::shoot));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
-      .onTrue(new WristCmd(wrist, 45));
+      .onTrue(new WristCmd(wrist, 90));
 
     new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-    .onTrue(new WristCmd(wrist, 0));
+    .onTrue(new WristCmd(wrist, 25));
     
     new JoystickButton(driverController, OIConstants.kXboxAButton)
-    .whileTrue(new IntakeFloorCmd(intake));
+    .onTrue(new ShootFromIntakeCmd(intake, shooter, wrist));
 
     new JoystickButton(driverController, OIConstants.kXboxBButton)
     .onTrue(new ElevatorCmd(elevator, 6));
@@ -136,6 +139,13 @@ public class RobotContainer {
 
     new JoystickButton(driverController,OIConstants.kXboxStartButton)
     .onTrue(new InstantCommand(elevator::home));
+
+    new JoystickButton(driverController, OIConstants.kXboxLeftStickButton)
+    .onTrue(new InstantCommand(drivebase::zeroGyro));
+
+    new JoystickButton(driverController, OIConstants.kXboxXButton)
+      .whileTrue(new IntakeFloorCmd(intake));
+
 
   }
 

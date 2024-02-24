@@ -336,7 +336,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    addVisionMeasurement();
+    //addVisionMeasurement();
   }
 
   @Override

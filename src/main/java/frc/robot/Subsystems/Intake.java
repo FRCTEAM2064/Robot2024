@@ -2,6 +2,7 @@ package frc.robot.Subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -18,12 +19,14 @@ public class Intake extends SubsystemBase {
   private SparkAbsoluteEncoder intakePivotEncoder;
   private SparkPIDController intakePID;
 
+  private RelativeEncoder limitEncoder;
+
   private DigitalInput intakeEndstop;
   private DigitalInput hasGamePieceDigitalInput;
 
   private IntakeState state = IntakeState.AT_POSITION;
   private double intakeTarget;
-  public boolean hasGamePeice = false;
+  public boolean hasGamePiece;
   private double intakeTargetAngle;
 
   public Intake() {
@@ -34,7 +37,8 @@ public class Intake extends SubsystemBase {
       );
     intakeMotor =
       new CANSparkMax(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
-
+    
+      limitEncoder = intakePivotMotor.getEncoder();
       intakeMotor.setInverted(false);
       intakeMotor.setIdleMode(IdleMode.kBrake);
     intakePivotEncoder =
@@ -46,15 +50,16 @@ public class Intake extends SubsystemBase {
     intakePID.setP(IntakeConstants.kIntakeP);
     intakePID.setI(IntakeConstants.kIntakeI);
     intakePID.setD(IntakeConstants.kIntakeD);
+    intakePID.setSmartMotionMaxAccel(IntakeConstants.kIntakeAcceleration,0);
 
     intakePID.setSmartMotionAllowedClosedLoopError(IntakeConstants.kIntakeAngleTolerance, 0);
     
-    intakePID.setPositionPIDWrappingEnabled(true);
+    intakePID.setPositionPIDWrappingEnabled(false);
     intakePID.setPositionPIDWrappingMinInput(0);
     intakePID.setPositionPIDWrappingMaxInput(1);
     intakePID.setOutputRange(-1, 1);
 
-    intakeMotor.burnFlash();
+     intakeMotor.burnFlash();
 
 
     intakeEndstop = new DigitalInput(IntakeConstants.kHomePositionLimitDIO);
@@ -67,7 +72,11 @@ public class Intake extends SubsystemBase {
 
 
   public void updateHasGamePiece(){
-  hasGamePeice = !hasGamePieceDigitalInput.get();
+  if (!hasGamePieceDigitalInput.get()){
+    hasGamePiece = true;
+  } else {
+    hasGamePiece = false;
+  }
   }
 
   public void home(){
@@ -86,12 +95,14 @@ public class Intake extends SubsystemBase {
 }
 
   public void setIntakeAngle(double target){
-    intakeTargetAngle = target;
     intakeTarget = target / 360;
+    intakeTarget += IntakeConstants.kIntakeOffset;
+    intakeTargetAngle = intakeTarget*360;
+    intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
   }
 
   public void intake(){
-    intakeMotor.set(0.25);
+    intakeMotor.set(1);
   }
 
   public void outtake(){
@@ -110,21 +121,28 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  public void endStopProtection(){
+    if(!intakeEndstop.get()){
+      limitEncoder.setPosition(0);
+    }
+
+    }
   public void debugValues(){
     SmartDashboard.putNumber("Intake Angle", getIntakeAngle());
     SmartDashboard.putNumber("Intake Encoder Val", intakePivotEncoder.getPosition());
     SmartDashboard.putNumber("Intake Target", intakeTarget);
     SmartDashboard.putNumber("Intake Target Angle", intakeTargetAngle);
-    SmartDashboard.putBoolean("Piece", hasGamePeice);
+    SmartDashboard.putBoolean("Piece", !hasGamePieceDigitalInput.get());
+    SmartDashboard.putNumber("Relative Intake Position", limitEncoder.getPosition());
   }
   
   @Override
   public void periodic() {
     //endStopProtection();
     updateHasGamePiece();
-    intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
+    // intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
     updateIntakeState();
-    // debugValues();
+    debugValues();
   }
 
   public enum IntakeState {
