@@ -59,9 +59,7 @@ public class Constants {
     public static final double kElevatorI = 0;
     public static final double kElevatorD = 0;
 
-    public static final double kElevatorRatio = .04;
-    public static final double kElevatorChainPitch = 0.25;
-    public static final int kElevatorSprocket = 22; 
+    public static final double kElevatorRatio = 4.5;
 
     public static final double kElevatorHeightTolerance = 0.5;
 

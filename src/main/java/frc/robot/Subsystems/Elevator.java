@@ -38,11 +38,12 @@ public class Elevator extends SubsystemBase {
         MotorType.kBrushless
       );
 
-    elevatorLeaderMotor.getEncoder();
 
     elevatorFollowerMotor.follow(elevatorLeaderMotor, true);
 
     elevatorEncoder = elevatorLeaderMotor.getEncoder();
+
+    elevatorEncoder.setPositionConversionFactor(1);
 
     elevatorLeaderPID = elevatorLeaderMotor.getPIDController();
 
@@ -70,13 +71,13 @@ public class Elevator extends SubsystemBase {
    * Current height in inches
    */
   public double getElevatorHeight() {
-    return elevatorEncoder.getPosition() / 4.5;
+    return elevatorEncoder.getPosition() * ElevatorConstants.kElevatorRatio;
 }
 
 
   public void setElevatorHeight(double height) {
-    height = height * 4.5;
-    elevatorLeaderPID.setReference(height, ControlType.kPosition);
+    targetHeight = height / ElevatorConstants.kElevatorRatio;
+    elevatorLeaderPID.setReference(targetHeight, ControlType.kPosition);
   }
 
 
