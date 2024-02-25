@@ -33,6 +33,8 @@ public class Shooter extends SubsystemBase {
   private boolean shooting = false;
   public boolean hasGamePeice = false;
 
+  private int pulseCount = 0;
+
   public Shooter() {
     leaderShooterMotor =
       new CANSparkFlex(ShooterConstants.kLeaderMotorID, MotorType.kBrushless);
@@ -63,7 +65,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feed() {
-    feederMotor.set(0.1);
+    feederMotor.set(0.2);
   }
 
   public void intake() {
@@ -85,8 +87,18 @@ public class Shooter extends SubsystemBase {
       pdh.getCurrent(ShooterConstants.kFeederMotorPDHPos) >
       ShooterConstants.kFeederMotorDrawLimit
     ) {
-      hasGamePeice = true;
-      feederMotor.set(0);
+
+      if (pulseCount > 5){
+
+        hasGamePeice = true;
+        feederMotor.set(0);
+        feederMotor.setIdleMode(IdleMode.kBrake);
+
+        pulseCount = 0;
+      
+      } else{
+        pulseCount += 1;
+      }
     }
   }
 
@@ -105,7 +117,6 @@ public class Shooter extends SubsystemBase {
     ) {
       feedTimer.reset();
       feedTimer.start();
-
       feederMotor.set(1.0);
       state = ShooterState.FEEDING;
     } else {
@@ -129,9 +140,8 @@ public class Shooter extends SubsystemBase {
 
   private void stopState() {
     if (shooting) {
-      feederEncoder.setPosition(0);
-      feederController.setReference(-0.1, ControlType.kPosition, 0);
-      feederMotor.setIdleMode(IdleMode.kBrake);
+     // feederEncoder.setPosition(0);
+     // feederController.setReference(-0.1, ControlType.kPosition, 0);
       leaderShooterMotor.set(1);
       state = ShooterState.STARTING;
     } else {

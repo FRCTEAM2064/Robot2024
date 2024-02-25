@@ -62,8 +62,11 @@ public class Intake extends SubsystemBase {
 
     intakeMotor.burnFlash();
 
+
     hasGamePieceDigitalInput =
       new DigitalInput(IntakeConstants.kHasGamePieceLimitDIO);
+
+      debugValues();
   }
 
   public void cleanIntake() {
@@ -114,7 +117,7 @@ public class Intake extends SubsystemBase {
 
   public void updateIntakeState() {
     if (
-      Math.abs(getIntakeAngle() - intakeTarget) >
+      Math.abs(intakePivotEncoder.getPosition() - intakeTarget) >
       IntakeConstants.kIntakeAngleTolerance
     ) {
       state = IntakeState.MOVING;
@@ -137,11 +140,8 @@ public class Intake extends SubsystemBase {
     );
     SmartDashboard.putNumber("Intake Target", intakeTarget);
     SmartDashboard.putNumber("Intake Target Angle", intakeTargetAngle);
-    SmartDashboard.putBoolean("Piece", !hasGamePieceDigitalInput.get());
-    SmartDashboard.putNumber(
-      "Relative Intake Position",
-      limitEncoder.getPosition()
-    );
+    //SmartDashboard.putBoolean("Intake Piece", !hasGamePieceDigitalInput.get());
+    SmartDashboard.putString("intake State", state.toString());
   }
 
   @Override

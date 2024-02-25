@@ -69,10 +69,10 @@ public class Constants {
 
   public static class WristConstants {
 
-    public static final double kWristHandoffAngle = 13;
+    public static final double kWristHandoffAngle = 15;
 
     public static final int kWristMotorID = 25;
-    public static final double kwristAngleTolerance = 0.002;
+    public static final double kwristAngleTolerance = 0.02;
 
     public static final double kWristP = 4;
     public static final double kWristI = 0;
@@ -95,7 +95,7 @@ public class Constants {
     public static final double kShooterTargetSpeed = 5000.0;
     public static final double kFeedDuration = 1.5;
     public static final int kFeederMotorPDHPos = 9;
-    public static final double kFeederMotorDrawLimit = 50;
+    public static final double kFeederMotorDrawLimit = 5.5;
   }
 
   public static class IntakeConstants {
@@ -105,14 +105,14 @@ public class Constants {
     public static final int kIntakePivotMotorID = 21;
     public static final int kIntakeMotorID = 22;
 
-    public static final double kIntakeAngleTolerance = 0.25;
+    public static final double kIntakeAngleTolerance = 0.05;
     public static final double kIntakeP = 1.5;
     public static final double kIntakeI = 0;
     public static final double kIntakeD = 0;
 
     public static final double kIntakeFloorAngle = 295;
     public static final double kIntakeStationAngle = 120;
-    public static final double kIntakeHandOffAngle = 75;
+    public static final double kIntakeHandOffAngle = 65;
     public static final double kIntakeHome = 0;
 
     public static final double kIntakeOffset = .05;

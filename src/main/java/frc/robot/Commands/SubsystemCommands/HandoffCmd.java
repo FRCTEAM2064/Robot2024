@@ -50,12 +50,12 @@ public class HandoffCmd extends Command {
     }
 
     if (wristInPos) {
-      elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
-      elevatorInPos = elevator.getState() == ElevatorState.AT_POSITION;
+     // elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
+     // elevatorInPos = elevator.getState() == ElevatorState.AT_POSITION;
     }
 
     if (intakeInPos && wristInPos && elevatorInPos) {
-      isFinished = true;
+      end(isFinished);
     }
 
     intakeInPos = intake.getState() == IntakeState.AT_POSITION;

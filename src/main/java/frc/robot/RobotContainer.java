@@ -114,8 +114,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // new JoystickButton(driverController, OIConstants.kXboxXButton)
-    //   .onTrue(new InstantCommand(shooter::shoot));
+    new JoystickButton(driverController, OIConstants.kXboxYButton)
+      .onTrue(new InstantCommand(shooter::shoot));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
       .onTrue(new WristCmd(wrist, 90));
@@ -127,16 +127,19 @@ public class RobotContainer {
     //   .onTrue(new ShootFromIntakeCmd(intake, shooter, wrist));
 
     new JoystickButton(driverController, OIConstants.kXboxAButton)
-    .onTrue(new InstantCommand(shooter::feed));
+    .onTrue(new HandoffNoElevatorCMD(shooter, intake, wrist));
 
-    new JoystickButton(driverController, OIConstants.kXboxBButton)
-      .onTrue(new ElevatorCmd(elevator, 6));
+    //     new JoystickButton(driverController, OIConstants.kXboxAButton)
+    // .onTrue(new FloorToHandoffCmd(shooter, intake, wrist));
 
-    new JoystickButton(driverController, OIConstants.kXboxYButton)
-      .onTrue(new ElevatorCmd(elevator, 0));
+    // new JoystickButton(driverController, OIConstants.kXboxBButton)
+    //   .onTrue(new ElevatorCmd(elevator, 6));
+
+    // new JoystickButton(driverController, OIConstants.kXboxYButton)
+    //   .onTrue(new ElevatorCmd(elevator, 0));
 
     new JoystickButton(driverController, OIConstants.kXboxStartButton)
-      .onTrue(new InstantCommand(elevator::home));
+      .onTrue(new InstantCommand(shooter::feed));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftStickButton)
       .onTrue(new InstantCommand(drivebase::zeroGyro));
