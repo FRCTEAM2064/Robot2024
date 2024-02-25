@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,8 +25,7 @@ public class Wrist extends SubsystemBase {
     wristMotor =
       new CANSparkMax(WristConstants.kWristMotorID, MotorType.kBrushless);
 
-    wristEncoder =
-     wristMotor.getAbsoluteEncoder();
+    wristEncoder = wristMotor.getAbsoluteEncoder();
 
     wristPID = wristMotor.getPIDController();
     wristPID.setFeedbackDevice(wristEncoder);
@@ -36,14 +34,19 @@ public class Wrist extends SubsystemBase {
     wristPID.setI(WristConstants.kWristI);
     wristPID.setD(WristConstants.kWristD);
     wristPID.setFF(WristConstants.kWristFF);
-    wristPID.setSmartMotionAllowedClosedLoopError(WristConstants.kwristAngleTolerance, 0);
+    wristPID.setSmartMotionAllowedClosedLoopError(
+      WristConstants.kwristAngleTolerance,
+      0
+    );
 
     wristPID.setPositionPIDWrappingEnabled(true);
-    wristPID.setPositionPIDWrappingMinInput(WristConstants.kEncoderPositionPIDMinInput);
-    wristPID.setPositionPIDWrappingMaxInput(WristConstants.kEncoderPositionPIDMaxInput);
-    wristPID.setOutputRange(-1,1);
-
-    wristEndstop = new DigitalInput(WristConstants.kWristEndstopDIO);
+    wristPID.setPositionPIDWrappingMinInput(
+      WristConstants.kEncoderPositionPIDMinInput
+    );
+    wristPID.setPositionPIDWrappingMaxInput(
+      WristConstants.kEncoderPositionPIDMaxInput
+    );
+    wristPID.setOutputRange(-1, 1);
 
     wristMotor.burnFlash();
   }
@@ -51,65 +54,61 @@ public class Wrist extends SubsystemBase {
   public void setWristAngle(double target) {
     wristTargetAngle = target;
     wristTarget = target / 360;
+    wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
   }
 
-public double getWristAngle() {
-  return wristEncoder.getPosition() * 360 + WristConstants.kWristOffsetAngle;
-}
-
-public double getWristEncoderVal(){
-  return wristEncoder.getPosition();
-}
-
-// public void zeroWrist(){
-//   wristEncoder.setZeroOffset(-wristEncoder.getPosition());
-// }
-
-// public void endStopProtection(){
-//   if (wristEndstop.get()){
-//     zeroWrist();
-//     wristMotor.stopMotor();
-//     wristTarget = 0;
-//   }
-// }
-
-public void home(){
-  if (wristEncoder.getPosition() > 0){
-    wristMotor.set(-0.05);
+  public void wristStop() {
+    wristMotor.stopMotor();
   }
-}
 
-  public WristState getState(){
+  public double getWristAngle() {
+    return wristEncoder.getPosition() * 360 + WristConstants.kWristOffsetAngle;
+  }
+
+  public double getWristEncoderVal() {
+    return wristEncoder.getPosition();
+  }
+
+  public void home() {
+    if (wristEncoder.getPosition() > 0) {
+      wristMotor.set(-0.05);
+    }
+  }
+
+  public WristState getState() {
     return state;
   }
 
-  private void updateWristState(){
-    if (Math.abs(getWristEncoderVal() - wristTarget) > WristConstants.kwristAngleTolerance){
+  private void updateWristState() {
+    if (
+      Math.abs(getWristEncoderVal() - wristTarget) >
+      WristConstants.kwristAngleTolerance
+    ) {
       state = WristState.MOVING;
     } else {
       state = WristState.AT_POSITION;
     }
   }
 
-  public void debugValues(){
+  public void debugValues() {
     SmartDashboard.putNumber("Encoder Val", getWristEncoderVal());
     SmartDashboard.putNumber("Wrist Angle", getWristAngle());
     SmartDashboard.putNumber("Wrist Target", wristTarget);
     SmartDashboard.putNumber("Wrist Target Angle", wristTargetAngle);
     SmartDashboard.putString("Wrist State", getState().toString());
-    SmartDashboard.putNumber("Wrist Encoder Offset", wristEncoder.getZeroOffset());
+    SmartDashboard.putNumber(
+      "Wrist Encoder Offset",
+      wristEncoder.getZeroOffset()
+    );
     SmartDashboard.putBoolean("Wrist Home Endstop", wristEndstop.get());
   }
 
-  public void competitionValues(){
-  }
+  public void competitionValues() {}
 
   @Override
   public void periodic() {
-    //endStopProtection();
-    wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
     updateWristState();
-     debugValues();
+    debugValues();
     //competitionValues();
   }
 

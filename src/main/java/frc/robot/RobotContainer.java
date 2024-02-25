@@ -14,13 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Commands.SubsystemCommands.IntakeFloorCmd;
-import frc.robot.Commands.SubsystemCommands.ShootFromIntakeCmd;
-import frc.robot.Commands.SubsystemCommands.PostionCommands.ElevatorCmd;
-import frc.robot.Commands.SubsystemCommands.PostionCommands.IntakeCmd;
-import frc.robot.Commands.SubsystemCommands.PostionCommands.WristCmd;
+import frc.robot.Commands.SubsystemCommands.*;
+import frc.robot.Commands.SubsystemCommands.PostionCommands.*;
 import frc.robot.Constants.Constants.OIConstants;
-import frc.robot.Constants.Constants.WristConstants;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
@@ -118,7 +114,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
     // new JoystickButton(driverController, OIConstants.kXboxXButton)
     //   .onTrue(new InstantCommand(shooter::shoot));
 
@@ -126,27 +121,25 @@ public class RobotContainer {
       .onTrue(new WristCmd(wrist, 90));
 
     new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-    .onTrue(new WristCmd(wrist, 25));
-    
+      .onTrue(new WristCmd(wrist, 25));
+
     new JoystickButton(driverController, OIConstants.kXboxAButton)
-    .onTrue(new ShootFromIntakeCmd(intake, shooter, wrist));
+      .onTrue(new ShootFromIntakeCmd(intake, shooter, wrist));
 
     new JoystickButton(driverController, OIConstants.kXboxBButton)
-    .onTrue(new ElevatorCmd(elevator, 6));
+      .onTrue(new ElevatorCmd(elevator, 6));
 
     new JoystickButton(driverController, OIConstants.kXboxYButton)
-    .onTrue(new ElevatorCmd(elevator, 0));
+      .onTrue(new ElevatorCmd(elevator, 0));
 
-    new JoystickButton(driverController,OIConstants.kXboxStartButton)
-    .onTrue(new InstantCommand(elevator::home));
+    new JoystickButton(driverController, OIConstants.kXboxStartButton)
+      .onTrue(new InstantCommand(elevator::home));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftStickButton)
-    .onTrue(new InstantCommand(drivebase::zeroGyro));
+      .onTrue(new InstantCommand(drivebase::zeroGyro));
 
     new JoystickButton(driverController, OIConstants.kXboxXButton)
       .whileTrue(new IntakeFloorCmd(intake));
-
-
   }
 
   public Command getAutonomousCommand() {

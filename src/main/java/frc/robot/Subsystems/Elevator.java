@@ -1,11 +1,11 @@
 package frc.robot.Subsystems;
 
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +25,7 @@ public class Elevator extends SubsystemBase {
   private double targetHeight;
 
   private DigitalInput elevatorEndstop;
+  private boolean elevatorHasZeroed;
 
   public Elevator() {
     elevatorLeaderMotor =
@@ -38,7 +39,6 @@ public class Elevator extends SubsystemBase {
         MotorType.kBrushless
       );
 
-
     elevatorFollowerMotor.follow(elevatorLeaderMotor, true);
 
     elevatorEncoder = elevatorLeaderMotor.getEncoder();
@@ -51,19 +51,35 @@ public class Elevator extends SubsystemBase {
     elevatorLeaderPID.setI(ElevatorConstants.kElevatorI);
     elevatorLeaderPID.setD(ElevatorConstants.kElevatorD);
 
-    elevatorLeaderPID.setSmartMotionAllowedClosedLoopError(ElevatorConstants.kElevatorHeightTolerance, 0);
+    elevatorLeaderPID.setSmartMotionAllowedClosedLoopError(
+      ElevatorConstants.kElevatorHeightTolerance,
+      0
+    );
 
     elevatorEndstop = new DigitalInput(ElevatorConstants.kElevatorEndstopDIO);
     debugValues();
 
     elevatorEncoder.setPositionConversionFactor(1);
+
+    elevatorLeaderMotor.setSmartCurrentLimit(20);
+    elevatorFollowerMotor.setSmartCurrentLimit(20);
+
+    elevatorLeaderMotor.setIdleMode(IdleMode.kBrake);
+    elevatorFollowerMotor.setIdleMode(IdleMode.kBrake);
+
+    elevatorHasZeroed = false;
+  }
+
+  public void elevatorStop() {
+    elevatorLeaderMotor.stopMotor();
   }
 
   public ElevatorState getState() {
     return state;
   }
 
-  public void zeroElevator(){
+  public void zeroElevator() {
+    elevatorHasZeroed = true;
     elevatorEncoder.setPosition(0);
   }
 
@@ -72,14 +88,14 @@ public class Elevator extends SubsystemBase {
    */
   public double getElevatorHeight() {
     return elevatorEncoder.getPosition() / ElevatorConstants.kElevatorRatio;
-}
-
-
-  public void setElevatorHeight(double height) {
-    targetHeight = height * ElevatorConstants.kElevatorRatio;
-    elevatorLeaderPID.setReference(targetHeight, ControlType.kPosition);
   }
 
+  public void setElevatorHeight(double height) {
+    if (elevatorHasZeroed) {
+      targetHeight = height * ElevatorConstants.kElevatorRatio;
+      elevatorLeaderPID.setReference(targetHeight, ControlType.kPosition);
+    }
+  }
 
   private void updateElevatorState() {
     if (
@@ -92,46 +108,35 @@ public class Elevator extends SubsystemBase {
     }
   }
 
-  private void endStopProtection(){
-    if (!elevatorEndstop.get()){
+  private void endStopProtection() {
+    if (!elevatorEndstop.get()) {
       zeroElevator();
       elevatorLeaderMotor.stopMotor();
       targetHeight = 0;
     }
   }
 
-  public void home(){
-    // if (elevatorEncoder.getPosition() > 0){
-    //   elevatorLeaderMotor.set(-0.01);
-    // }
-    elevatorLeaderMotor.set(-0.05);
+  public void home() {
+    elevatorLeaderMotor.set(-0.1);
   }
 
-  public void debugValues(){
+  public void debugValues() {
     SmartDashboard.putNumber("Target Height Encoder", targetHeight);
-    SmartDashboard.putNumber("Elevator Encoder val", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber(
+      "Elevator Encoder val",
+      elevatorEncoder.getPosition()
+    );
     SmartDashboard.putBoolean("Elevator Switch", elevatorEndstop.get());
     SmartDashboard.putNumber("Elevator Height", getElevatorHeight());
     SmartDashboard.putNumber("Elevator Target Height", targetHeight);
     SmartDashboard.putString("Elevator State", state.toString());
-
-
-
-
   }
 
   @Override
   public void periodic() {
     endStopProtection();
-    // elevatorLeaderPID.setReference(
-    //   targetHeight,
-    //   CANSparkMax.ControlType.kPosition
-    // );
     updateElevatorState();
     debugValues();
-    // System.out.println(elevatorEndstop.get());
-    // System.out.println(elevatorEncoder.getPosition());
-
   }
 
   public enum ElevatorState {
