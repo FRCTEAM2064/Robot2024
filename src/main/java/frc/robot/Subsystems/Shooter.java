@@ -63,7 +63,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feed() {
-    feederMotor.set(1.0);
+    feederMotor.set(0.1);
   }
 
   public void intake() {
@@ -71,9 +71,9 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot() {
-    if (hasGamePeice) {
+    // if (hasGamePeice) {
       shooting = true;
-    }
+    // }
   }
 
   public ShooterState getState() {

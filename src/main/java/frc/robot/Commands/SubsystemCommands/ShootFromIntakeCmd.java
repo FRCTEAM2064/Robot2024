@@ -53,9 +53,10 @@ public class ShootFromIntakeCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooter.getState() == ShooterState.STOP) {
-      return true;
-    }
+    // if (shooter.getState() == ShooterState.STOP) {
+    //   return true;
+    // }
+    // return false;
     return false;
   }
 }

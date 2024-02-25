@@ -19,7 +19,6 @@ public class Wrist extends SubsystemBase {
   private double wristTarget = 0;
   private double wristTargetAngle = 0;
 
-  private DigitalInput wristEndstop;
 
   public Wrist() {
     wristMotor =
@@ -100,7 +99,7 @@ public class Wrist extends SubsystemBase {
       "Wrist Encoder Offset",
       wristEncoder.getZeroOffset()
     );
-    SmartDashboard.putBoolean("Wrist Home Endstop", wristEndstop.get());
+    // SmartDashboard.putBoolean("Wrist Home Endstop", wristEndstop.get());
   }
 
   public void competitionValues() {}
