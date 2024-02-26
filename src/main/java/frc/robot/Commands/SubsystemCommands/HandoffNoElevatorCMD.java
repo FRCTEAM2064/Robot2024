@@ -5,14 +5,13 @@
 package frc.robot.Commands.SubsystemCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.Constants.IntakeConstants;
 import frc.robot.Constants.Constants.WristConstants;
-import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Wrist;
 import frc.robot.Subsystems.Intake.IntakeState;
-import frc.robot.Subsystems.Shooter.ShooterState;
 import frc.robot.Subsystems.Wrist.WristState;
 
 public class HandoffNoElevatorCMD extends Command {
@@ -54,16 +53,11 @@ public class HandoffNoElevatorCMD extends Command {
     intake.stop();
     intake.setIntakeAngle(0);
     wrist.setWristAngle(0);
-    super.end(interrupted);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished(){
-    if (isFinished){
-      return true;
-    } else {
-      return false;
-    }
+    return isFinished;
   }
 }

@@ -1,12 +1,10 @@
 package frc.robot.Subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,9 +21,6 @@ public class Shooter extends SubsystemBase {
   private PowerDistribution pdh;
 
   private RelativeEncoder leaderShooterEncoder;
-  private RelativeEncoder feederEncoder;
-
-  private SparkPIDController feederController;
   public Timer feedTimer = new Timer();
 
   private ShooterState state = ShooterState.STOP;
@@ -48,10 +43,9 @@ public class Shooter extends SubsystemBase {
     leaderShooterEncoder = leaderShooterMotor.getEncoder();
     feederMotor.setInverted(true);
 
-    feederEncoder = feederMotor.getEncoder();
-    feederController = feederMotor.getPIDController();
+    feederMotor.getEncoder();
 
-    feederController.setP(1);
+    feederMotor.setSmartCurrentLimit(20);
 
     pdh = new PowerDistribution(1, ModuleType.kRev);
   }

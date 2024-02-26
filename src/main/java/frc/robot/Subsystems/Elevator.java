@@ -39,6 +39,8 @@ public class Elevator extends SubsystemBase {
         MotorType.kBrushless
       );
 
+
+
     elevatorFollowerMotor.follow(elevatorLeaderMotor, true);
 
     elevatorEncoder = elevatorLeaderMotor.getEncoder();
@@ -61,8 +63,8 @@ public class Elevator extends SubsystemBase {
 
     elevatorEncoder.setPositionConversionFactor(1);
 
-    elevatorLeaderMotor.setSmartCurrentLimit(20);
-    elevatorFollowerMotor.setSmartCurrentLimit(20);
+    elevatorLeaderMotor.setSmartCurrentLimit(40);
+    elevatorFollowerMotor.setSmartCurrentLimit(40);
 
     elevatorLeaderMotor.setIdleMode(IdleMode.kBrake);
     elevatorFollowerMotor.setIdleMode(IdleMode.kBrake);
@@ -99,7 +101,7 @@ public class Elevator extends SubsystemBase {
 
   private void updateElevatorState() {
     if (
-      Math.abs(getElevatorHeight() - targetHeight) >
+      Math.abs(elevatorEncoder.getPosition() - targetHeight) >
       ElevatorConstants.kElevatorHeightTolerance
     ) {
       state = ElevatorState.MOVING;

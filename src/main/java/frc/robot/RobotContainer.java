@@ -7,16 +7,16 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.SubsystemCommands.*;
-import frc.robot.Commands.SubsystemCommands.PostionCommands.*;
 import frc.robot.Constants.Constants.OIConstants;
+import frc.robot.Constants.Constants.WristConstants;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
@@ -102,8 +102,8 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(
       //!RobotBase.isSimulation()
-         driveFieldOrientedAnglularVelocity
-        //: driveFieldOrientedDirectAngleSim
+      driveFieldOrientedAnglularVelocity
+      //: driveFieldOrientedDirectAngleSim
     );
 
     configureBindings();
@@ -118,25 +118,27 @@ public class RobotContainer {
       .onTrue(new InstantCommand(shooter::shoot));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
-      .onTrue(new WristCmd(wrist, 90));
+      .onTrue(new InstantCommand(() -> wrist.setWristAngle(45)));
 
     new JoystickButton(driverController, OIConstants.kXboxRightBumper)
-      .onTrue(new WristCmd(wrist, 25));
+      .onTrue(
+        new InstantCommand(() -> wrist.setWristAngle(WristConstants.kWristHome))
+      );
 
     // new JoystickButton(driverController, OIConstants.kXboxAButton)
     //   .onTrue(new ShootFromIntakeCmd(intake, shooter, wrist));
 
     new JoystickButton(driverController, OIConstants.kXboxAButton)
-    .onTrue(new HandoffNoElevatorCMD(shooter, intake, wrist));
+      .onTrue(new HandoffCmd(wrist, shooter, intake, elevator));
 
     //     new JoystickButton(driverController, OIConstants.kXboxAButton)
     // .onTrue(new FloorToHandoffCmd(shooter, intake, wrist));
 
     // new JoystickButton(driverController, OIConstants.kXboxBButton)
-    //   .onTrue(new ElevatorCmd(elevator, 6));
+    //   .onTrue(new InstantCommand(()-> elevator.setElevatorHeight(0)));
 
     // new JoystickButton(driverController, OIConstants.kXboxYButton)
-    //   .onTrue(new ElevatorCmd(elevator, 0));
+    //   .onTrue(new InstantCommand(()-> elevator.setElevatorHeight(0)));
 
     new JoystickButton(driverController, OIConstants.kXboxStartButton)
       .onTrue(new InstantCommand(shooter::feed));

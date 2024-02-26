@@ -64,7 +64,9 @@ public class Constants {
 
     public static final double kElevatorHeightTolerance = 0.5;
 
-    public static final double kElevatorHandoffHeight = 0;
+    public static final double kElevatorHandoffHeight = 2;
+
+    public static final double kElevatorHome = 1;
   }
 
   public static class WristConstants {
@@ -84,6 +86,8 @@ public class Constants {
     public static final double kWristFF = 0.1;
 
     public static final double kWristOffsetAngle = 25;
+
+    public static final double kWristHome = 25;
   }
 
   public static class ShooterConstants {

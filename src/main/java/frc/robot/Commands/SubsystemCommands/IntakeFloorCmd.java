@@ -17,9 +17,12 @@ public class IntakeFloorCmd extends Command {
     if (!intake.hasGamePiece) {
       intake.intake();
       intake.setIntakeAngle(IntakeConstants.kIntakeFloorAngle);
-    } else {
-      end(isFinished());
     }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return intake.hasGamePiece;
   }
 
   @Override

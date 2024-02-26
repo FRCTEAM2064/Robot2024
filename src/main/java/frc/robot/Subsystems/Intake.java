@@ -37,6 +37,8 @@ public class Intake extends SubsystemBase {
     intakeMotor =
       new CANSparkMax(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
 
+    intakeMotor.setSmartCurrentLimit(40);
+
     limitEncoder = intakePivotMotor.getEncoder();
     intakeMotor.setInverted(false);
     intakeMotor.setIdleMode(IdleMode.kBrake);
@@ -49,7 +51,6 @@ public class Intake extends SubsystemBase {
     intakePID.setI(IntakeConstants.kIntakeI);
     intakePID.setD(IntakeConstants.kIntakeD);
     intakePID.setSmartMotionMaxAccel(IntakeConstants.kIntakeAcceleration, 0);
-
     intakePID.setSmartMotionAllowedClosedLoopError(
       IntakeConstants.kIntakeAngleTolerance,
       0
@@ -62,11 +63,10 @@ public class Intake extends SubsystemBase {
 
     intakeMotor.burnFlash();
 
-
     hasGamePieceDigitalInput =
       new DigitalInput(IntakeConstants.kHasGamePieceLimitDIO);
 
-      debugValues();
+    debugValues();
   }
 
   public void cleanIntake() {
@@ -108,7 +108,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void outtake() {
-    intakeMotor.set(-1);
+    intakeMotor.set(-0.5);
   }
 
   public void stop() {

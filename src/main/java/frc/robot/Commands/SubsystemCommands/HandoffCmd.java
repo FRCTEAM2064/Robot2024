@@ -19,11 +19,6 @@ public class HandoffCmd extends Command {
   private final Intake intake;
   private final Elevator elevator;
 
-  private Boolean intakeInPos = false;
-  private Boolean wristInPos = false;
-  private Boolean elevatorInPos = false;
-  private boolean isFinished = false;
-
   public HandoffCmd(
     Wrist wrist,
     Shooter shooter,
@@ -37,40 +32,33 @@ public class HandoffCmd extends Command {
   }
 
   @Override
+  public void initialize() {
+    elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
+    wrist.setWristAngle(WristConstants.kWristHandoffAngle);
+    intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
+  }
+
+  @Override
   public void execute() {
-    if (!intake.hasGamePiece) {
-      cancel();
+    if (
+      intake.getState() == IntakeState.AT_POSITION &&
+      elevator.getState() == ElevatorState.AT_POSITION &&
+      wrist.getState() == WristState.AT_POSITION
+    ) {
+      shooter.intake();
+      intake.outtake();
     }
-
-    if (!intakeInPos) {
-      intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
-    } else {
-      wrist.setWristAngle(WristConstants.kWristHandoffAngle);
-      wristInPos = wrist.getState() == WristState.AT_POSITION;
-    }
-
-    if (wristInPos) {
-     // elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
-     // elevatorInPos = elevator.getState() == ElevatorState.AT_POSITION;
-    }
-
-    if (intakeInPos && wristInPos && elevatorInPos) {
-      end(isFinished);
-    }
-
-    intakeInPos = intake.getState() == IntakeState.AT_POSITION;
   }
 
   @Override
   public boolean isFinished() {
-    return isFinished;
+    return shooter.hasGamePeice;
   }
 
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted) {
-      shooter.intake();
-      intake.outtake();
-    }
+    intake.setIntakeAngle(IntakeConstants.kIntakeHome);
+    wrist.setWristAngle(WristConstants.kWristHome);
+    elevator.setElevatorHeight(ElevatorConstants.kElevatorHome);
   }
 }

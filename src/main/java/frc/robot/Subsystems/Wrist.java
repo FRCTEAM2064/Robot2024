@@ -19,7 +19,6 @@ public class Wrist extends SubsystemBase {
   private double wristTarget = 0;
   private double wristTargetAngle = 0;
 
-
   public Wrist() {
     wristMotor =
       new CANSparkMax(WristConstants.kWristMotorID, MotorType.kBrushless);
@@ -51,6 +50,10 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setWristAngle(double target) {
+    target -= WristConstants.kWristOffsetAngle;
+    if (target < 0) {
+      target = 0;
+    }
     wristTargetAngle = target;
     wristTarget = target / 360;
     wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
@@ -79,8 +82,10 @@ public class Wrist extends SubsystemBase {
   }
 
   private void updateWristState() {
-    if (Math.abs(getWristEncoderVal() - wristTarget) 
-    > WristConstants.kwristAngleTolerance) {
+    if (
+      Math.abs(getWristEncoderVal() - wristTarget) >
+      WristConstants.kwristAngleTolerance
+    ) {
       System.out.println(Math.abs(getWristAngle() - wristTarget));
       state = WristState.MOVING;
     } else {
@@ -98,7 +103,7 @@ public class Wrist extends SubsystemBase {
       "Wrist Encoder Offset",
       wristEncoder.getZeroOffset()
     );
-    SmartDashboard.putNumber("Motor Speed",wristMotor.get());
+    SmartDashboard.putNumber("Motor Speed", wristMotor.get());
     // SmartDashboard.putBoolean("Wrist Home Endstop", wristEndstop.get());
   }
 
