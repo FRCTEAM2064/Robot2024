@@ -8,17 +8,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Constants.IntakeConstants;
 import frc.robot.Constants.Constants.WristConstants;
 import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.Intake.IntakeState;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Wrist;
-import frc.robot.Subsystems.Intake.IntakeState;
 import frc.robot.Subsystems.Wrist.WristState;
 
 public class HandoffNoElevatorCMD extends Command {
+
   /** Creates a new HandoffNoElevatorCMD. */
   private Shooter shooter;
   private Intake intake;
   private Wrist wrist;
   private boolean isFinished = false;
+
   public HandoffNoElevatorCMD(Shooter shooter, Intake intake, Wrist wrist) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.wrist = wrist;
@@ -36,14 +38,17 @@ public class HandoffNoElevatorCMD extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (wrist.getState() == WristState.AT_POSITION && intake.getState() == IntakeState.AT_POSITION){
-      if (!shooter.hasGamePeice){
+    if (
+      wrist.getState() == WristState.AT_POSITION &&
+      intake.getState() == IntakeState.AT_POSITION
+    ) {
+      if (!shooter.hasGamePiece) {
         intake.outtake();
         shooter.feed();
       } else {
         isFinished = true;
+      }
     }
-  }
   }
 
   // Called once the command ends or is interrupted.
@@ -56,7 +61,7 @@ public class HandoffNoElevatorCMD extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished(){
+  public boolean isFinished() {
     return isFinished;
   }
 }

@@ -25,7 +25,7 @@ public class Elevator extends SubsystemBase {
   private double targetHeight;
 
   private DigitalInput elevatorEndstop;
-  private boolean elevatorHasZeroed;
+  public boolean elevatorHasZeroed;
 
   public Elevator() {
     elevatorLeaderMotor =
@@ -70,6 +70,7 @@ public class Elevator extends SubsystemBase {
     elevatorFollowerMotor.setIdleMode(IdleMode.kBrake);
 
     elevatorHasZeroed = false;
+    zeroElevator();
   }
 
   public void elevatorStop() {

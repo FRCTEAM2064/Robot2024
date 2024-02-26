@@ -26,7 +26,7 @@ public class Shooter extends SubsystemBase {
   private ShooterState state = ShooterState.STOP;
 
   private boolean shooting = false;
-  public boolean hasGamePeice = false;
+  public boolean hasGamePiece = false;
 
   private int pulseCount = 0;
 
@@ -68,7 +68,7 @@ public class Shooter extends SubsystemBase {
 
   public void shoot() {
     // if (hasGamePeice) {
-      shooting = true;
+    shooting = true;
     // }
   }
 
@@ -81,16 +81,13 @@ public class Shooter extends SubsystemBase {
       pdh.getCurrent(ShooterConstants.kFeederMotorPDHPos) >
       ShooterConstants.kFeederMotorDrawLimit
     ) {
-
-      if (pulseCount > 5){
-
-        hasGamePeice = true;
+      if (pulseCount > 5) {
+        hasGamePiece = true;
         feederMotor.set(0);
         feederMotor.setIdleMode(IdleMode.kBrake);
 
         pulseCount = 0;
-      
-      } else{
+      } else {
         pulseCount += 1;
       }
     }
@@ -125,7 +122,7 @@ public class Shooter extends SubsystemBase {
       feederMotor.setIdleMode(IdleMode.kCoast);
       state = ShooterState.STOP;
       shooting = false;
-      hasGamePeice = false;
+      hasGamePiece = false;
     } else {
       leaderShooterMotor.set(1);
       feederMotor.set(1);
@@ -134,8 +131,8 @@ public class Shooter extends SubsystemBase {
 
   private void stopState() {
     if (shooting) {
-     // feederEncoder.setPosition(0);
-     // feederController.setReference(-0.1, ControlType.kPosition, 0);
+      // feederEncoder.setPosition(0);
+      // feederController.setReference(-0.1, ControlType.kPosition, 0);
       leaderShooterMotor.set(1);
       state = ShooterState.STARTING;
     } else {
@@ -161,7 +158,7 @@ public class Shooter extends SubsystemBase {
   public void debugValues() {
     SmartDashboard.putNumber("Feed Timer", feedTimer.get());
     SmartDashboard.putBoolean("Shooting", shooting);
-    SmartDashboard.putBoolean("Piece", hasGamePeice);
+    SmartDashboard.putBoolean("Piece", hasGamePiece);
     SmartDashboard.putString("State", state.toString());
     SmartDashboard.putNumber("Shooter Speed", getShooterSpeed());
   }

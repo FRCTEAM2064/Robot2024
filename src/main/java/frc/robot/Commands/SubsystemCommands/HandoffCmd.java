@@ -33,6 +33,10 @@ public class HandoffCmd extends Command {
 
   @Override
   public void initialize() {
+    if (elevator.elevatorHasZeroed) {
+      this.cancel();
+    }
+
     elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
     wrist.setWristAngle(WristConstants.kWristHandoffAngle);
     intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
@@ -52,7 +56,7 @@ public class HandoffCmd extends Command {
 
   @Override
   public boolean isFinished() {
-    return shooter.hasGamePeice;
+    return shooter.hasGamePiece;
   }
 
   @Override
