@@ -5,7 +5,6 @@
 package frc.robot.Commands.SubsystemCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.Constants.IntakeConstants;
 import frc.robot.Constants.Constants.WristConstants;
 import frc.robot.Subsystems.Intake;
