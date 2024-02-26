@@ -85,7 +85,6 @@ public class Wrist extends SubsystemBase {
       Math.abs(getWristEncoderVal() - wristTarget) >
       WristConstants.kwristAngleTolerance
     ) {
-      System.out.println(Math.abs(getWristAngle() - wristTarget));
       state = WristState.MOVING;
     } else {
       state = WristState.AT_POSITION;
