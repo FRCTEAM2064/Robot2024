@@ -1,5 +1,6 @@
 package frc.robot.Subsystems;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -73,6 +74,15 @@ public class Wrist extends SubsystemBase {
   public void home() {
     if (wristEncoder.getPosition() > 0) {
       wristMotor.set(-0.05);
+    }
+  }
+
+  public void toggleWristMotorIdleMode(){
+    if(wristMotor.getIdleMode() == IdleMode.kBrake){
+      wristMotor.setIdleMode(IdleMode.kCoast);
+    }
+    else{
+      wristMotor.setIdleMode(IdleMode.kBrake);
     }
   }
 

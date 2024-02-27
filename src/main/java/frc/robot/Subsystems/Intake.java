@@ -115,6 +115,15 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(0);
   }
 
+  public void toggleIntakeMotorIdleMode(){
+    if(intakePivotMotor.getIdleMode() == IdleMode.kBrake){
+      intakePivotMotor.setIdleMode(IdleMode.kCoast);
+    }
+    else{
+      intakePivotMotor.setIdleMode(IdleMode.kBrake);
+    }
+  }
+
   public void updateIntakeState() {
     if (
       Math.abs(intakePivotEncoder.getPosition() - intakeTarget) >
@@ -142,6 +151,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Target Angle", intakeTargetAngle);
     //SmartDashboard.putBoolean("Intake Piece", !hasGamePieceDigitalInput.get());
     SmartDashboard.putString("intake State", state.toString());
+    SmartDashboard.putString("Intake Idle Mode", intakePivotMotor.getIdleMode().toString());
   }
 
   @Override

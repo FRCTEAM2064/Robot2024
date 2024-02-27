@@ -129,6 +129,14 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  private void resetGamePiece(){
+    if(feedTimer.get() > 5){
+      hasGamePiece = false;
+      feedTimer.stop();
+      feedTimer.reset();
+    }
+  }
+
   private void stopState() {
     if (shooting) {
       // feederEncoder.setPosition(0);
@@ -170,6 +178,7 @@ public class Shooter extends SubsystemBase {
     updateShooterState();
     updateHasGamePiece();
     debugValues();
+    resetGamePiece();
     // competitionValues();
   }
 

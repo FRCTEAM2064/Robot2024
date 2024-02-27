@@ -70,7 +70,7 @@ public class Elevator extends SubsystemBase {
     elevatorFollowerMotor.setIdleMode(IdleMode.kBrake);
 
     elevatorHasZeroed = false;
-    zeroElevator();
+    // zeroElevator();
   }
 
   public void elevatorStop() {
