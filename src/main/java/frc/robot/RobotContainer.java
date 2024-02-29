@@ -7,11 +7,13 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.SubsystemCommands.*;
 import frc.robot.Constants.Constants.OIConstants;
@@ -124,6 +126,9 @@ public class RobotContainer {
         new InstantCommand(() -> wrist.setWristAngle(WristConstants.kWristHome))
       );
 
+      new JoystickButton(driverController, OIConstants.kXboxStartButton)
+      .onTrue(new InstantCommand(elevator::home));
+
     // new JoystickButton(driverController, OIConstants.kXboxAButton)
     //   .onTrue(new ShootFromIntakeCmd(intake, shooter, wrist));
 
@@ -139,14 +144,22 @@ public class RobotContainer {
     // new JoystickButton(driverController, OIConstants.kXboxYButton)
     //   .onTrue(new InstantCommand(()-> elevator.setElevatorHeight(0)));
 
-    new JoystickButton(driverController, OIConstants.kXboxStartButton)
-      .onTrue(new InstantCommand(shooter::feed));
+    // new JoystickButton(driverController, OIConstants.kXboxStartButton)
+    //   .onTrue(new InstantCommand(shooter::feed));
+
+    new JoystickButton(driverController, OIConstants.kXboxBackButton)
+    .onTrue(new SequentialCommandGroup(new InstantCommand(intake::toggleIntakeMotorIdleMode), new InstantCommand(wrist::toggleWristMotorIdleMode)));
 
     new JoystickButton(driverController, OIConstants.kXboxLeftStickButton)
       .onTrue(new InstantCommand(drivebase::zeroGyro));
 
     new JoystickButton(driverController, OIConstants.kXboxXButton)
-      .whileTrue(new IntakeFloorCmd(intake));
+      .whileTrue(new IntakeFloorCmd(intake, elevator));
+
+    new JoystickButton(driverController, OIConstants.kXboxBButton)
+      .onTrue(new InstantCommand(() -> elevator.setElevatorHeight(6)));
+
+    
   }
 
   public Command getAutonomousCommand() {

@@ -33,17 +33,18 @@ public class HandoffCmd extends Command {
 
   @Override
   public void initialize() {
-    if (elevator.elevatorHasZeroed) {
+    if (!elevator.elevatorHasZeroed) {
       this.cancel();
     }
 
-    elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
-    wrist.setWristAngle(WristConstants.kWristHandoffAngle);
-    intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
   }
 
   @Override
   public void execute() {
+
+    elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
+    wrist.setWristAngle(WristConstants.kWristHandoffAngle);
+    intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
     if (
       intake.getState() == IntakeState.AT_POSITION &&
       elevator.getState() == ElevatorState.AT_POSITION &&
@@ -61,6 +62,7 @@ public class HandoffCmd extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    intake.stop();
     intake.setIntakeAngle(IntakeConstants.kIntakeHome);
     wrist.setWristAngle(WristConstants.kWristHome);
     elevator.setElevatorHeight(ElevatorConstants.kElevatorHome);
