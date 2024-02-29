@@ -1,13 +1,20 @@
 package frc.robot.Constants;
 
 import com.pathplanner.lib.util.PIDConstants;
+
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
   public static final int kThroughBoreEncoderRev = 8192;
+
+  public final static double kSpeakerHeight = 80.0;
+  public final static double kSpeakerYOffset = 218.5;
+  public final static double kSpeakerXOffset = 9;
 
   public static class OIConstants {
 
@@ -42,7 +49,7 @@ public class Constants {
       new Rotation3d(0, 0, 0)
     );
 
-    public static final String kFrontCamName = "Camera 1";
+    public static final String kFrontCamName = "photonCam";
   }
 
   public static class ElevatorConstants {
@@ -67,6 +74,8 @@ public class Constants {
     public static final double kElevatorHandoffHeight = 2;
 
     public static final double kElevatorHome = 1;
+
+    public static final double kElevatorHomedHeight = 24;
   }
 
   public static class WristConstants {
@@ -132,4 +141,25 @@ public class Constants {
       0
     );
   }
-}
+
+  public static final double targetWidth =
+  Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
+
+// See
+// https://firstfrc.blob.core.windows.net/frc2020/PlayingField/2020FieldDrawing-SeasonSpecific.pdf
+// page 197
+public static final double targetHeight =
+  Units.inchesToMeters(98.19) - Units.inchesToMeters(81.19); // meters
+
+// See https://firstfrc.blob.core.windows.net/frc2020/PlayingField/LayoutandMarkingDiagram.pdf
+// pages 4 and 5
+public static final double kFarTgtXPos = Units.feetToMeters(54);
+public static final double kFarTgtYPos =
+  Units.feetToMeters(27 / 2) - Units.inchesToMeters(43.75) - Units.inchesToMeters(48.0 / 2.0);
+public static final double kFarTgtZPos =
+  (Units.inchesToMeters(98.19) - targetHeight) / 2 + targetHeight;
+
+public static final Pose3d kFarTargetPose =
+  new Pose3d(
+          new Translation3d(kFarTgtXPos, kFarTgtYPos, kFarTgtZPos),
+          new Rotation3d(0.0, 0.0, Units.degreesToRadians(180)));}

@@ -17,7 +17,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.AutonConstants;
+import frc.robot.Constants.Constants.VisionConstants;
+
 import java.io.File;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -35,7 +38,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-  public PhotonCameraWrapper photonCam;
+  public PhotonCamera photonCam;
 
   /**
    * Swerve drive object.
@@ -77,11 +80,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SwerveControllerConfiguration controllerCfg
   ) {
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
-    // photonCam =
-    //   new PhotonCameraWrapper(
-    //     VisionConstants.kFrontCamName,
-    //     VisionConstants.kFrontRobotToCam
-    //   );
+    photonCam =
+      new PhotonCamera(VisionConstants.kFrontCamName);
   }
 
   /**
@@ -334,7 +334,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    //addVisionMeasurement();
+  }
 
   @Override
   public void simulationPeriodic() {}
@@ -521,15 +523,14 @@ public class SwerveSubsystem extends SubsystemBase {
    * Add a fake vision reading for testing purposes.
    */
   public void addVisionMeasurement() {
-    Optional<EstimatedRobotPose> photonCamReturn = photonCam.getEstimatedGlobalPose(
-      swerveDrive.getPose()
-    );
-    if (photonCamReturn.isPresent()) {
-      EstimatedRobotPose estimatedPose = photonCamReturn.get();
-      swerveDrive.addVisionMeasurement(
-        estimatedPose.estimatedPose.toPose2d(),
-        estimatedPose.timestampSeconds
-      );
+    var result = photonCam.getLatestResult();
+    if (result.hasTargets()) {
+                  var imageCaptureTime = result.getTimestampSeconds();
+            var camToTargetTrans = result.getBestTarget().getBestCameraToTarget();
+            var camPose = Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
+            swerveDrive.addVisionMeasurement(
+                    camPose.transformBy(VisionConstants.kFrontRobotToCam).toPose2d(), imageCaptureTime);
+        
     }
   }
 }
