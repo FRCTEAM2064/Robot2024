@@ -29,6 +29,7 @@ import frc.robot.Constants.Constants.VisionConstants;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -51,6 +52,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public PhotonCamera photonCam = new PhotonCamera("photonCam");
   public AprilTagFieldLayout aprilTagFieldLayout;
+  public Path fieldLayoutFile = new File(Filesystem.getDeployDirectory(), "2024-crescendo.json").toPath();
+  
+  public double distanceToSpeaker = 0;
+  public double thetaToSpeaker = 0;
 
   /**
    * Swerve drive object.
@@ -98,7 +103,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void initializeAprilTagFieldLayout() {
     try {
-      aprilTagFieldLayout = new AprilTagFieldLayout(new File(Filesystem.getDeployDirectory(), "2024-crescendo.json").toPath());
+      aprilTagFieldLayout = new AprilTagFieldLayout(fieldLayoutFile);
 
     } catch (IOException e) {
       aprilTagFieldLayout = new AprilTagFieldLayout(new ArrayList<>(), 16.4592, 8.2296);
@@ -356,7 +361,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-     addVisionMeasurement();
+    setSpeakerDistAndTheta();
+    addVisionMeasurement();
   }
 
   @Override
@@ -567,5 +573,10 @@ public class SwerveSubsystem extends SubsystemBase {
                 swerveDrive.addVisionMeasurement(robotPose.toPose2d(), imageCaptureTime);
         }
     }
-}
+  }
+
+  public void setSpeakerDistAndTheta() {
+    distanceToSpeaker = 0;
+    thetaToSpeaker = 0;
+  }
 }
