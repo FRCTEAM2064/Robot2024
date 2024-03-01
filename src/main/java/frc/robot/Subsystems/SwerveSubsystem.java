@@ -6,14 +6,20 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -22,11 +28,16 @@ import frc.robot.Constants.Constants.AutonConstants;
 import frc.robot.Constants.Constants.VisionConstants;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -38,7 +49,8 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-  public PhotonCamera photonCam;
+  public PhotonCamera photonCam = new PhotonCamera("photonCam");
+  public AprilTagFieldLayout aprilTagFieldLayout;
 
   /**
    * Swerve drive object.
@@ -67,6 +79,7 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(true); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     setupPathPlanner();
+    initializeAprilTagFieldLayout();
   }
 
   /**
@@ -80,9 +93,17 @@ public class SwerveSubsystem extends SubsystemBase {
     SwerveControllerConfiguration controllerCfg
   ) {
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
-    photonCam =
-      new PhotonCamera(VisionConstants.kFrontCamName);
   }
+
+
+  public void initializeAprilTagFieldLayout() {
+    try {
+      aprilTagFieldLayout = new AprilTagFieldLayout(new File(Filesystem.getDeployDirectory(), "2024-crescendo.json").toPath());
+
+    } catch (IOException e) {
+      aprilTagFieldLayout = new AprilTagFieldLayout(new ArrayList<>(), 16.4592, 8.2296);
+    }
+}
 
   /**
    * Setup AutoBuilder for PathPlanner.
@@ -335,7 +356,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //addVisionMeasurement();
+     addVisionMeasurement();
   }
 
   @Override
@@ -523,14 +544,28 @@ public class SwerveSubsystem extends SubsystemBase {
    * Add a fake vision reading for testing purposes.
    */
   public void addVisionMeasurement() {
-    var result = photonCam.getLatestResult();
+    PhotonPipelineResult result = photonCam.getLatestResult();
     if (result.hasTargets()) {
-                  var imageCaptureTime = result.getTimestampSeconds();
-            var camToTargetTrans = result.getBestTarget().getBestCameraToTarget();
-            var camPose = Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
-            swerveDrive.addVisionMeasurement(
-                    camPose.transformBy(VisionConstants.kFrontRobotToCam).toPose2d(), imageCaptureTime);
-        
+        PhotonTrackedTarget target = result.getBestTarget();
+        SmartDashboard.putNumber("Photon ID", target.getFiducialId());
+
+        Double imageCaptureTime = result.getTimestampSeconds();
+
+        // Get the Optional<Pose3d> for the target
+        Optional<Pose3d> targetPose3dOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+
+        // Check if the Optional contains a value
+        if (targetPose3dOptional.isPresent()) {
+            Pose3d targetPose3d = targetPose3dOptional.get(); // Get the Pose3d since it's present
+
+            // Estimate robot pose based on the camera to target and target pose
+            Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                target.getBestCameraToTarget(),
+                targetPose3d,
+                VisionConstants.kFrontRobotToCam);
+
+                swerveDrive.addVisionMeasurement(robotPose.toPose2d(), imageCaptureTime);
+        }
     }
-  }
+}
 }
