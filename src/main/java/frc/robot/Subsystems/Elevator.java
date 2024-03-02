@@ -2,6 +2,7 @@ package frc.robot.Subsystems;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -14,7 +15,7 @@ import frc.robot.Constants.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
 
-  private CANSparkMax elevatorLeaderMotor;
+  public CANSparkMax elevatorLeaderMotor;
   private CANSparkMax elevatorFollowerMotor;
   private RelativeEncoder elevatorEncoder;
 
@@ -84,6 +85,7 @@ public class Elevator extends SubsystemBase {
   public void zeroElevator() {
     elevatorHasZeroed = true;
     elevatorEncoder.setPosition(0);
+    elevatorLeaderMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
   }
 
   /*
@@ -111,8 +113,9 @@ public class Elevator extends SubsystemBase {
     }
   }
 
+  //ADD MAX HEIGHT?
   private void endStopProtection() {
-    if (!elevatorEndstop.get()) {
+    if (!elevatorEndstop.get() && !elevatorHasZeroed){
       zeroElevator();
       elevatorLeaderMotor.stopMotor();
       targetHeight = 0;

@@ -32,9 +32,7 @@ public class AimAtSpeakerCmd extends Command {
   @Override
   public void execute() {
     double zDistance = (Constants.kSpeakerHeight - (elevator.getElevatorHeight() + ElevatorConstants.kElevatorHomedHeight));
-    double xDistance = Math.sqrt(
-      (drive.getPose().getX() * drive.getPose().getX()) + 
-      ((drive.getPose().getY() - Constants.kSpeakerYOffset) * drive.getPose().getY() - Constants.kSpeakerYOffset));
+    double xDistance = drive.distanceToSpeaker;
     double angle = Math.tan(zDistance / xDistance);
     wrist.setWristAngle(90 - angle);
   }

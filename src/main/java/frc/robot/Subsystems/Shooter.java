@@ -5,11 +5,14 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Constants.IntakeConstants;
 import frc.robot.Constants.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
@@ -17,6 +20,8 @@ public class Shooter extends SubsystemBase {
   private CANSparkFlex leaderShooterMotor;
   private CANSparkFlex followerShooterMotor;
   private CANSparkMax feederMotor;
+
+  private DigitalInput hasGamePieceSensor;
 
   private PowerDistribution pdh;
 
@@ -48,6 +53,9 @@ public class Shooter extends SubsystemBase {
     feederMotor.setSmartCurrentLimit(20);
 
     pdh = new PowerDistribution(1, ModuleType.kRev);
+    
+    hasGamePieceSensor = new DigitalInput(ShooterConstants.kHasGamePieceDIO);
+
   }
 
   public void shooterStop() {
@@ -60,6 +68,10 @@ public class Shooter extends SubsystemBase {
 
   public void feed() {
     feederMotor.set(0.2);
+  }
+  
+  public void cleanFeed() {
+    feederMotor.set(0.05);
   }
 
   public void intake() {
@@ -76,20 +88,22 @@ public class Shooter extends SubsystemBase {
     return state;
   }
 
-  public void updateHasGamePiece() {
-    if (
-      pdh.getCurrent(ShooterConstants.kFeederMotorPDHPos) >
-      ShooterConstants.kFeederMotorDrawLimit
-    ) {
-      if (pulseCount > 5) {
-        hasGamePiece = true;
-        feederMotor.set(0);
-        feederMotor.setIdleMode(IdleMode.kBrake);
 
-        pulseCount = 0;
-      } else {
-        pulseCount += 1;
-      }
+  public void updateHasGamePiece() {
+    if(!hasGamePieceSensor.get()){
+      hasGamePiece = true;
+    }
+    else{
+      hasGamePiece = false;
+    }
+  }
+
+  public void overrideHasGamePiece(){
+    if(hasGamePiece == true){
+      hasGamePiece = false;
+    }
+    else{
+      hasGamePiece = true;
     }
   }
 
@@ -166,20 +180,23 @@ public class Shooter extends SubsystemBase {
   public void debugValues() {
     SmartDashboard.putNumber("Feed Timer", feedTimer.get());
     SmartDashboard.putBoolean("Shooting", shooting);
-    SmartDashboard.putBoolean("Piece", hasGamePiece);
+    SmartDashboard.putBoolean("Shooter Has  Piece", hasGamePiece);
     SmartDashboard.putString("State", state.toString());
     SmartDashboard.putNumber("Shooter Speed", getShooterSpeed());
   }
 
-  public void competitionValues() {}
+  public void competitionValues() {
+    SmartDashboard.putBoolean("ShooterPieces", hasGamePiece);
+
+  }
 
   @Override
   public void periodic() {
     updateShooterState();
     updateHasGamePiece();
-    debugValues();
+    // debugValues();
     resetGamePiece();
-    // competitionValues();
+    competitionValues();
   }
 
   public enum ShooterState {

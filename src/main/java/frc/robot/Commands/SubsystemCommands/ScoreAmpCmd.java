@@ -4,6 +4,7 @@
 
 package frc.robot.Commands.SubsystemCommands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Constants.ElevatorConstants;
 import frc.robot.Constants.Constants.WristConstants;
@@ -21,6 +22,7 @@ public class ScoreAmpCmd extends Command {
   Shooter shooter;
   Wrist wrist;
   private boolean hasFinished = false;
+  Timer wristTimer = new Timer();
   public ScoreAmpCmd(Elevator elevator, Wrist wrist, Shooter shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
@@ -36,10 +38,11 @@ public class ScoreAmpCmd extends Command {
   @Override
   public void execute() {
     elevator.setElevatorHeight(7);
-    wrist.setWristAngle(120);
+    wrist.setWristAngle(100);
+    wristTimer.start();
     if(elevator.getState() == ElevatorState.AT_POSITION && wrist.getState() == WristState.AT_POSITION){
       shooter.shoot();
-      if(shooter.getState() == ShooterState.STOP){
+      if(shooter.getState() == ShooterState.STOP && wristTimer.get() >= 3){
         hasFinished = true;
       }
     }
@@ -50,6 +53,8 @@ public class ScoreAmpCmd extends Command {
   public void end(boolean interrupted) {
     wrist.setWristAngle(WristConstants.kWristHome);
     elevator.setElevatorHeight(ElevatorConstants.kElevatorHome);
+    wristTimer.stop();
+    wristTimer.reset();
   }
 
   // Returns true when the command should end.

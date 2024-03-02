@@ -81,7 +81,7 @@ public class SwerveSubsystem extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
+    swerveDrive.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(true); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     setupPathPlanner();
     initializeAprilTagFieldLayout();
@@ -576,7 +576,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void setSpeakerDistAndTheta() {
-    distanceToSpeaker = 0;
-    thetaToSpeaker = 0;
+    double yToRobot = Constants.kSpeakerYOffset - Units.metersToInches(getPose().getY());
+    double xToRobot = Constants.kSpeakerXOffset - Units.metersToInches(getPose().getX());
+    distanceToSpeaker = Math.sqrt(Math.pow(xToRobot, 2) + Math.pow(yToRobot, 2));
+    thetaToSpeaker = Math.atan(yToRobot/xToRobot);
   }
 }

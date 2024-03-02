@@ -45,8 +45,8 @@ public class Constants {
 
     public static final double kFrontCameraPitch = 0;
     public static final Transform3d kFrontRobotToCam = new Transform3d(
-      new Translation3d(0.5, 0.5, 0.5),
-      new Rotation3d(0, 0, 0)
+      new Translation3d(11.75, 4.5, 17.5),
+      new Rotation3d(15, 0, 0)
     );
 
     public static final String kFrontCamName = "photonCam";
@@ -109,6 +109,8 @@ public class Constants {
     public static final double kFeedDuration = 1.5;
     public static final int kFeederMotorPDHPos = 9;
     public static final double kFeederMotorDrawLimit = 5.5;
+
+    public static final int kHasGamePieceDIO = 1; 
   }
 
   public static class IntakeConstants {

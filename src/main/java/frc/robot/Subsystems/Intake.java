@@ -7,6 +7,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants.IntakeConstants;
@@ -27,6 +28,9 @@ public class Intake extends SubsystemBase {
   private double intakeTarget;
   public boolean hasGamePiece;
   private double intakeTargetAngle;
+
+    public Timer intakeTimer = new Timer();
+
 
   public Intake() {
     intakePivotMotor =
@@ -149,7 +153,7 @@ public class Intake extends SubsystemBase {
     );
     SmartDashboard.putNumber("Intake Target", intakeTarget);
     SmartDashboard.putNumber("Intake Target Angle", intakeTargetAngle);
-    //SmartDashboard.putBoolean("Intake Piece", !hasGamePieceDigitalInput.get());
+    SmartDashboard.putBoolean("Intake Piece", !hasGamePieceDigitalInput.get());
     SmartDashboard.putString("intake State", state.toString());
     SmartDashboard.putString("Intake Idle Mode", intakePivotMotor.getIdleMode().toString());
   }

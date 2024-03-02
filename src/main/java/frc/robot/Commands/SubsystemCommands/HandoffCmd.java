@@ -41,6 +41,8 @@ public class HandoffCmd extends Command {
 
   @Override
   public void execute() {
+    intake.intakeTimer.start();
+
 
     elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
     wrist.setWristAngle(WristConstants.kWristHandoffAngle);
@@ -48,7 +50,7 @@ public class HandoffCmd extends Command {
     if (
       intake.getState() == IntakeState.AT_POSITION &&
       elevator.getState() == ElevatorState.AT_POSITION &&
-      wrist.getState() == WristState.AT_POSITION
+      wrist.getState() == WristState.AT_POSITION && intake.intakeTimer.get() >= 3
     ) {
       shooter.intake();
       intake.outtake();
@@ -66,5 +68,8 @@ public class HandoffCmd extends Command {
     intake.setIntakeAngle(IntakeConstants.kIntakeHome);
     wrist.setWristAngle(WristConstants.kWristHome);
     elevator.setElevatorHeight(ElevatorConstants.kElevatorHome);
+    intake.intakeTimer.stop();
+    intake.intakeTimer.reset();
+
   }
 }
