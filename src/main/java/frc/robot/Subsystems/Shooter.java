@@ -187,6 +187,8 @@ public class Shooter extends SubsystemBase {
 
   public void competitionValues() {
     SmartDashboard.putBoolean("ShooterPieces", hasGamePiece);
+    SmartDashboard.putNumber("Shooter Speed", getShooterSpeed());
+
 
   }
 

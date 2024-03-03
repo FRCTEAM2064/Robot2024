@@ -8,6 +8,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants.WristConstants;
+import frc.robot.Subsystems.Intake.IntakeState;
 
 public class Wrist extends SubsystemBase {
 
@@ -57,6 +58,7 @@ public class Wrist extends SubsystemBase {
     wristTargetAngle = target;
     wristTarget = target / 360;
     wristPID.setReference(wristTarget, CANSparkMax.ControlType.kPosition);
+    state = WristState.MOVING;
   }
 
   public void wristStop() {

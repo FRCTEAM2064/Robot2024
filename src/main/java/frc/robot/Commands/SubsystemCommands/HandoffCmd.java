@@ -1,5 +1,9 @@
 package frc.robot.Commands.SubsystemCommands;
 
+import java.lang.reflect.InaccessibleObjectException;
+
+import javax.lang.model.util.ElementScanner14;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Constants.ElevatorConstants;
 import frc.robot.Constants.Constants.IntakeConstants;
@@ -18,6 +22,8 @@ public class HandoffCmd extends Command {
   private final Shooter shooter;
   private final Intake intake;
   private final Elevator elevator;
+
+  private boolean executingHandoff = false;
 
   public HandoffCmd(
     Wrist wrist,
@@ -41,16 +47,18 @@ public class HandoffCmd extends Command {
 
   @Override
   public void execute() {
+    
+    if(executingHandoff == false){
     intake.intakeTimer.start();
-
-
     elevator.setElevatorHeight(ElevatorConstants.kElevatorHandoffHeight);
     wrist.setWristAngle(WristConstants.kWristHandoffAngle);
     intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
+    executingHandoff = true;
+    }
     if (
       intake.getState() == IntakeState.AT_POSITION &&
       elevator.getState() == ElevatorState.AT_POSITION &&
-      wrist.getState() == WristState.AT_POSITION && intake.intakeTimer.get() >= 3
+      wrist.getState() == WristState.AT_POSITION
     ) {
       shooter.intake();
       intake.outtake();
@@ -59,7 +67,12 @@ public class HandoffCmd extends Command {
 
   @Override
   public boolean isFinished() {
-    return shooter.hasGamePiece;
+    if(shooter.hasGamePiece || intake.intakeTimer.get() > 3){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   @Override
@@ -67,7 +80,9 @@ public class HandoffCmd extends Command {
     intake.stop();
     intake.setIntakeAngle(IntakeConstants.kIntakeHome);
     wrist.setWristAngle(WristConstants.kWristHome);
-    elevator.setElevatorHeight(ElevatorConstants.kElevatorHome);
+    elevator.setElevatorHeight(4);
+    shooter.feederStop();
+    executingHandoff = false;
     intake.intakeTimer.stop();
     intake.intakeTimer.reset();
 

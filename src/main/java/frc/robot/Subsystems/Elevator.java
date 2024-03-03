@@ -99,6 +99,7 @@ public class Elevator extends SubsystemBase {
     if (elevatorHasZeroed) {
       targetHeight = height * ElevatorConstants.kElevatorRatio;
       elevatorLeaderPID.setReference(targetHeight, ControlType.kPosition);
+      state = ElevatorState.MOVING;
     }
   }
 

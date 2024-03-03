@@ -70,6 +70,8 @@ public class Intake extends SubsystemBase {
     hasGamePieceDigitalInput =
       new DigitalInput(IntakeConstants.kHasGamePieceLimitDIO);
 
+
+    intakeMotor.setIdleMode(IdleMode.kCoast);
     debugValues();
   }
 
@@ -105,6 +107,7 @@ public class Intake extends SubsystemBase {
     intakeTarget += IntakeConstants.kIntakeOffset;
     intakeTargetAngle = intakeTarget * 360;
     intakePID.setReference(intakeTarget, CANSparkMax.ControlType.kPosition);
+    state = IntakeState.MOVING;
   }
 
   public void intake() {
@@ -156,6 +159,9 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean("Intake Piece", !hasGamePieceDigitalInput.get());
     SmartDashboard.putString("intake State", state.toString());
     SmartDashboard.putString("Intake Idle Mode", intakePivotMotor.getIdleMode().toString());
+    SmartDashboard.putNumber("IntakeTimer", intakeTimer.get());
+    SmartDashboard.putNumber("INTAKE ANGLE", getIntakeAngle());
+
   }
 
   @Override

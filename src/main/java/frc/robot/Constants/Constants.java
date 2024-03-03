@@ -73,7 +73,7 @@ public class Constants {
 
     public static final double kElevatorHandoffHeight = 5;
 
-    public static final double kElevatorHome = 1;
+    public static final double kElevatorHome = 2;
 
     public static final double kElevatorHomedHeight = 24;
   }
@@ -105,7 +105,7 @@ public class Constants {
     public static final int kLeaderMotorID = 27;
     public static final int kFollowerMotorID = 28;
 
-    public static final double kShooterTargetSpeed = 6500.0;
+    public static final double kShooterTargetSpeed = 6200.0;
     public static final double kFeedDuration = 1.5;
     public static final int kFeederMotorPDHPos = 9;
     public static final double kFeederMotorDrawLimit = 5.5;
@@ -127,7 +127,7 @@ public class Constants {
 
     public static final double kIntakeFloorAngle = 300;
     public static final double kIntakeStationAngle = 120;
-    public static final double kIntakeHandOffAngle = 55;
+    public static final double kIntakeHandOffAngle = 47.5;
     public static final double kIntakeHome = 0;
 
     public static final double kIntakeOffset = .05;

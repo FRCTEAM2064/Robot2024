@@ -55,27 +55,7 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
-    Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-      () ->
-        MathUtil.applyDeadband(
-          driverController.getLeftY(),
-          OIConstants.kDeadband
-        ),
-      () ->
-        MathUtil.applyDeadband(
-          driverController.getLeftX(),
-          OIConstants.kDeadband
-        ),
-      () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis),
-      () -> driverController.getRawAxis(OIConstants.kXboxRightYAxis)
-    );
-
-    // Applies deadbands and inverts controls because joysticks
-    // are back-right positive while robot
-    // controls are front-left positive
-    // left stick controls translation
-    // right stick controls the angular velocity of the robot
-    // Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+    // Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
     //   () ->
     //     MathUtil.applyDeadband(
     //       driverController.getLeftY(),
@@ -86,8 +66,28 @@ public class RobotContainer {
     //       driverController.getLeftX(),
     //       OIConstants.kDeadband
     //     ),
-    //   () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis)
+    //   () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis),
+    //   () -> driverController.getRawAxis(OIConstants.kXboxRightYAxis)
     // );
+
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the angular velocity of the robot
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftY(),
+          OIConstants.kDeadband
+        ),
+      () ->
+        MathUtil.applyDeadband(
+          driverController.getLeftX(),
+          OIConstants.kDeadband
+        ),
+      () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis)
+    );
 
     // Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
     //   () ->
@@ -105,13 +105,13 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(
       //!RobotBase.isSimulation()
-      // driveFieldOrientedAnglularVelocity
-      driveFieldOrientedDirectAngle
+      driveFieldOrientedAnglularVelocity
+      // driveFieldOrientedDirectAngle
       //: driveFieldOrientedDirectAngleSim
     );
-    NamedCommands.registerCommand("HandoffCmd", new HandoffCmd(wrist, shooter, intake, elevator));
-    NamedCommands.registerCommand("IntakeFloorCmd", new IntakeFloorCmd(intake, elevator));
-    NamedCommands.registerCommand("Shoot", new InstantCommand(shooter::shoot));
+    // NamedCommands.registerCommand("HandoffCmd", new HandoffCmd(wrist, shooter, intake, elevator));
+    // NamedCommands.registerCommand("IntakeFloorCmd", new IntakeFloorCmd(intake, elevator));
+    // NamedCommands.registerCommand("Shoot", new InstantCommand(shooter::shoot));
 
 
 
@@ -172,6 +172,9 @@ public class RobotContainer {
       //DRIVER MAPPING
       new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
       .whileTrue(new IntakeFloorCmd(intake, elevator));
+
+      new JoystickButton(driverController, OIConstants.kXboxBButton)
+      .onTrue(new InstantCommand(drivebase::zeroGyro));
     
       // OPERATOR MAPPING
       new JoystickButton(operatorController, OIConstants.kXboxLeftBumper)
@@ -188,22 +191,30 @@ public class RobotContainer {
 
       // might need elevator???
       new JoystickButton(operatorController, OIConstants.kXboxXButton)
-      .onTrue(new SequentialCommandGroup(new InstantCommand(() -> wrist.setWristAngle(45)), new InstantCommand(shooter::shoot)));
+      .onTrue(new InstantCommand(() -> wrist.setWristAngle(90)));
 
       new JoystickButton(operatorController, OIConstants.kXboxAButton)
       .onTrue(new HandoffCmd(wrist, shooter, intake, elevator));
 
+      new JoystickButton(driverController, OIConstants.kXboxBButton)
+        .onTrue(new SequentialCommandGroup(new InstantCommand(intake::toggleIntakeMotorIdleMode), new InstantCommand(wrist::toggleWristMotorIdleMode)));
+
       // new JoystickButton(operatorController, OIConstants.kXboxStartButton)
       // .onTrue(new InstantCommand(shooter::overrideHasGamePiece));
 
+      // new JoystickButton(operatorController, OIConstants.kXboxYButton)
+      // .onTrue(new ScoreAmpCmd(elevator, wrist, shooter));
+
       new JoystickButton(operatorController, OIConstants.kXboxYButton)
-      .onTrue(new ScoreAmpCmd(elevator, wrist, shooter));
+      .onTrue(new InstantCommand(() -> wrist.setWristAngle(35)));
 
       new JoystickButton(driverController, OIConstants.kXboxStartButton)
       .onTrue(new InstantCommand(elevator::home));
 
       //SHUFFLEBOARD COMMANDS
-      SmartDashboard.putData("Autonomous Command", new InstantCommand(shooter::cleanFeed));
+      SmartDashboard.putData("Clean Wheels", new InstantCommand(shooter::cleanFeed));
+
+      
 
 
 
