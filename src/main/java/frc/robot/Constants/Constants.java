@@ -136,11 +136,11 @@ public class Constants {
 
   public static class AutonConstants {
 
-    public static final PIDConstants ANGLE_PID = new PIDConstants(0.4, 0, 0.01);
+    public static final PIDConstants ANGLE_PID = new PIDConstants(0.004, 0.0, 1.5);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(
-      0.7,
-      0,
-      0
+      0.004,
+      0.0000002,
+      1.0
     );
   }
 

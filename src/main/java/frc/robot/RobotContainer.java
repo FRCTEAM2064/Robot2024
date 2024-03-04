@@ -40,10 +40,10 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
     new File(Filesystem.getDeployDirectory(), "swerve/neo")
   );
-  final Shooter shooter = new Shooter();
-  final Wrist wrist = new Wrist();
-  final Intake intake = new Intake();
-  final Elevator elevator = new Elevator();
+  // final Shooter shooter = new Shooter();
+  // final Wrist wrist = new Wrist();
+  // final Intake intake = new Intake();
+  // final Elevator elevator = new Elevator();
   private final SendableChooser<Command> autoChooser;
 
   // private final Joystick driverController = new Joystick(
@@ -178,6 +178,7 @@ public class RobotContainer {
     //   .onTrue(new InstantCommand(() -> elevator.setElevatorHeight(6)));
     // -------------------------------------------
       //DRIVER MAPPING
+      /*
       new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
       .whileTrue(new IntakeFloorCmd(intake, elevator));
 
@@ -224,6 +225,7 @@ public class RobotContainer {
 
       //SHUFFLEBOARD COMMANDS
       SmartDashboard.putData("Clean Wheels", new InstantCommand(shooter::cleanFeed));
+      */
 
       
 
@@ -232,7 +234,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
-    return AutoBuilder.followPath(path);
+    // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
+    // return AutoBuilder.followPath(path);
+    return autoChooser.getSelected();
   }
 }
