@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -14,10 +16,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Commands.AutoCommnads.DriveDistance;
 import frc.robot.Commands.SubsystemCommands.*;
+import frc.robot.Constants.Constants.IntakeConstants;
 import frc.robot.Constants.Constants.OIConstants;
 import frc.robot.Constants.Constants.WristConstants;
 import frc.robot.Subsystems.Elevator;
@@ -26,6 +32,8 @@ import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SwerveSubsystem;
 import frc.robot.Subsystems.Wrist;
 import java.io.File;import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+
 
 public class RobotContainer {
 
@@ -175,6 +183,9 @@ public class RobotContainer {
 
       new JoystickButton(driverController, OIConstants.kXboxBButton)
       .onTrue(new InstantCommand(drivebase::zeroGyro));
+      
+      new JoystickButton(driverController, OIConstants.kXboxRightBumper)
+      .whileTrue (new SequentialCommandGroup(new InstantCommand(() -> intake.setIntakeAngle(173.57)), new WaitCommand(2), new InstantCommand(intake::outtake)));
     
       // OPERATOR MAPPING
       new JoystickButton(operatorController, OIConstants.kXboxLeftBumper)
@@ -221,6 +232,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
+    return AutoBuilder.followPath(path);
   }
 }
