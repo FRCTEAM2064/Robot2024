@@ -45,8 +45,8 @@ public class Constants {
 
     public static final double kFrontCameraPitch = 0;
     public static final Transform3d kFrontRobotToCam = new Transform3d(
-      new Translation3d(11.75, 4.5, 17.5),
-      new Rotation3d(15, 0, 0)
+      new Translation3d(0.298, 0.11, 0.45),
+      new Rotation3d(0, 0, 0)
     );
 
     public static final String kFrontCamName = "photonCam";
@@ -136,10 +136,10 @@ public class Constants {
 
   public static class AutonConstants {
 
-    public static final PIDConstants ANGLE_PID = new PIDConstants(0.004, 0.0, 1.5);
+    public static final PIDConstants ANGLE_PID = new PIDConstants(0.8, 0.0, 0.0);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(
-      0.004,
-      0.0000002,
+      0.15,
+      0.0,
       1.0
     );
   }
