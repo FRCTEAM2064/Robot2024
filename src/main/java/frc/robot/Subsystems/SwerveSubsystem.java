@@ -6,12 +6,10 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -26,19 +24,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.Constants;
 import frc.robot.Constants.Constants.AutonConstants;
 import frc.robot.Constants.Constants.VisionConstants;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -47,6 +36,13 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -127,18 +123,16 @@ public class SwerveSubsystem extends SubsystemBase {
         4.5,
         // Max module speed, in m/s
         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
-        // Drive base radius in meters. Distance from robot center to furthest module.
+        // Drive base radius in meters. Distance from robot center to the furthest module.
         new ReplanningConfig()
-        // Default path replanning config. See the API for the options here
+        // Default path planning config. See the API for the options here
       ),
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
         // This will flip the path being followed to the red side of the field.
         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
         var alliance = DriverStation.getAlliance();
-        return alliance.isPresent()
-          ? alliance.get() == DriverStation.Alliance.Red
-          : false;
+        return alliance.filter(value -> value == DriverStation.Alliance.Red).isPresent();
       },
       this // Reference to this subsystem to set requirements
     );
@@ -201,7 +195,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Command to drive the robot using translative values and heading as a setpoint.
+   * Command to drive the robot using translate values and heading as a setpoint.
    *
    * @param translationX Translation in the X direction. Cubed for smoother controls.
    * @param translationY Translation in the Y direction. Cubed for smoother controls.
@@ -217,8 +211,8 @@ public class SwerveSubsystem extends SubsystemBase {
   ) {
     swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
-      double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
-      double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
+      double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth control out
+      double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth control out
       // Make the robot move
       driveFieldOriented(
         swerveDrive.swerveController.getTargetSpeeds(
@@ -234,7 +228,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Command to drive the robot using translative values and heading as a setpoint.
+   * Command to drive the robot using translate values and heading as a setpoint.
    *
    * @param translationX Translation in the X direction.
    * @param translationY Translation in the Y direction.
@@ -290,7 +284,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Command to drive the robot using translative values and heading as angular velocity.
+   * Command to drive the robot using translate values and heading as angular velocity.
    *
    * @param translationX     Translation in the X direction. Cubed for smoother controls.
    * @param translationY     Translation in the Y direction. Cubed for smoother controls.
@@ -325,9 +319,9 @@ public class SwerveSubsystem extends SubsystemBase {
    * the wheel velocities.  Also has field- and robot-relative modes, which affect how the translation vector is used.
    *
    * @param translation   {@link Translation2d} that is the commanded linear velocity of the robot, in meters per
-   *                      second. In robot-relative mode, positive x is torwards the bow (front) and positive y is
-   *                      torwards port (left).  In field-relative mode, positive x is away from the alliance wall
-   *                      (field North) and positive y is torwards the left wall when looking through the driver station
+   *                      second. In robot-relative mode, positive x is towards the bow (front) and positive y is
+   *                      towards port (left).  In field-relative mode, positive x is away from the alliance wall
+   *                      (field North) and positive y is towards the left wall when looking through the driver station
    *                      glass (field West).
    * @param rotation      Robot angular rate, in radians per second. CCW positive.  Unaffected by field/robot
    *                      relativity.
@@ -365,10 +359,7 @@ public class SwerveSubsystem extends SubsystemBase {
     addVisionMeasurement();
   }
 
-  @Override
-  public void simulationPeriodic() {}
-
-  /**
+    /**
    * Get the swerve drive kinematics object.
    *
    * @return {@link SwerveDriveKinematics} of the swerve drive.
@@ -555,7 +546,7 @@ public class SwerveSubsystem extends SubsystemBase {
         PhotonTrackedTarget target = result.getBestTarget();
         SmartDashboard.putNumber("Photon ID", target.getFiducialId());
 
-        Double imageCaptureTime = result.getTimestampSeconds();
+        double imageCaptureTime = result.getTimestampSeconds();
 
         // Get the Optional<Pose3d> for the target
         Optional<Pose3d> targetPose3dOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());

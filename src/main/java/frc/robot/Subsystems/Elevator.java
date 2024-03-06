@@ -16,16 +16,16 @@ import frc.robot.Constants.Constants.ElevatorConstants;
 public class Elevator extends SubsystemBase {
 
   public CANSparkMax elevatorLeaderMotor;
-  private CANSparkMax elevatorFollowerMotor;
-  private RelativeEncoder elevatorEncoder;
+  private final CANSparkMax elevatorFollowerMotor;
+  private final RelativeEncoder elevatorEncoder;
 
-  private SparkPIDController elevatorLeaderPID;
+  private final SparkPIDController elevatorLeaderPID;
 
   private ElevatorState state = ElevatorState.AT_POSITION;
 
   private double targetHeight;
 
-  private DigitalInput elevatorEndstop;
+  private final DigitalInput elevatorEndstop;
   public boolean elevatorHasZeroed;
 
   public Elevator() {

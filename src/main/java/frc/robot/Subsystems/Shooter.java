@@ -5,27 +5,21 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Constants.IntakeConstants;
 import frc.robot.Constants.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  private CANSparkFlex leaderShooterMotor;
-  private CANSparkFlex followerShooterMotor;
-  private CANSparkMax feederMotor;
+  private final CANSparkFlex leaderShooterMotor;
+  private final CANSparkFlex followerShooterMotor;
+  private final CANSparkMax feederMotor;
 
-  private DigitalInput hasGamePieceSensor;
+  private final DigitalInput hasGamePieceSensor;
 
-  private PowerDistribution pdh;
-
-  private RelativeEncoder leaderShooterEncoder;
+    private final RelativeEncoder leaderShooterEncoder;
   public Timer feedTimer = new Timer();
 
   private ShooterState state = ShooterState.STOP;
@@ -33,9 +27,7 @@ public class Shooter extends SubsystemBase {
   private boolean shooting = false;
   public boolean hasGamePiece = false;
 
-  private int pulseCount = 0;
-
-  public Shooter() {
+    public Shooter() {
     leaderShooterMotor =
       new CANSparkFlex(ShooterConstants.kLeaderMotorID, MotorType.kBrushless);
     followerShooterMotor =
@@ -52,9 +44,7 @@ public class Shooter extends SubsystemBase {
 
     feederMotor.setSmartCurrentLimit(20);
 
-    pdh = new PowerDistribution(1, ModuleType.kRev);
-    
-    hasGamePieceSensor = new DigitalInput(ShooterConstants.kHasGamePieceDIO);
+      hasGamePieceSensor = new DigitalInput(ShooterConstants.kHasGamePieceDIO);
 
   }
 
@@ -79,9 +69,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot() {
-    // if (hasGamePeice) {
     shooting = true;
-    // }
   }
 
   public ShooterState getState() {
@@ -90,21 +78,11 @@ public class Shooter extends SubsystemBase {
 
 
   public void updateHasGamePiece() {
-    if(!hasGamePieceSensor.get()){
-      hasGamePiece = true;
-    }
-    else{
-      hasGamePiece = false;
-    }
+      hasGamePiece = !hasGamePieceSensor.get();
   }
 
   public void overrideHasGamePiece(){
-    if(hasGamePiece == true){
-      hasGamePiece = false;
-    }
-    else{
-      hasGamePiece = true;
-    }
+      hasGamePiece = !hasGamePiece;
   }
 
   public double getShooterSpeed() {
@@ -153,9 +131,7 @@ public class Shooter extends SubsystemBase {
 
   private void stopState() {
     if (shooting) {
-      // feederEncoder.setPosition(0);
-      // feederController.setReference(-0.1, ControlType.kPosition, 0);
-      leaderShooterMotor.set(1);
+        leaderShooterMotor.set(1);
       state = ShooterState.STARTING;
     } else {
       leaderShooterMotor.set(0);

@@ -1,16 +1,11 @@
 package frc.robot.Constants;
 
 import com.pathplanner.lib.util.PIDConstants;
-
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 
 public class Constants {
-
-  public static final int kThroughBoreEncoderRev = 8192;
 
   public final static double kSpeakerHeight = 80.0;
   public final static double kSpeakerYOffset = 218.5;
@@ -43,7 +38,6 @@ public class Constants {
 
   public static class VisionConstants {
 
-    public static final double kFrontCameraPitch = 0;
     public static final Transform3d kFrontRobotToCam = new Transform3d(
       new Translation3d(11.75, 4.5, 17.5),
       new Rotation3d(15, 0, 0)
@@ -83,7 +77,7 @@ public class Constants {
     public static final double kWristHandoffAngle = 35;
 
     public static final int kWristMotorID = 25;
-    public static final double kwristAngleTolerance = 0.02;
+    public static final double kWristAngleTolerance = 0.02;
 
     public static final double kWristP = 4;
     public static final double kWristI = 0;
@@ -107,8 +101,6 @@ public class Constants {
 
     public static final double kShooterTargetSpeed = 6200.0;
     public static final double kFeedDuration = 1.5;
-    public static final int kFeederMotorPDHPos = 9;
-    public static final double kFeederMotorDrawLimit = 5.5;
 
     public static final int kHasGamePieceDIO = 1; 
   }
@@ -143,25 +135,4 @@ public class Constants {
       0
     );
   }
-
-  public static final double targetWidth =
-  Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70); // meters
-
-// See
-// https://firstfrc.blob.core.windows.net/frc2020/PlayingField/2020FieldDrawing-SeasonSpecific.pdf
-// page 197
-public static final double targetHeight =
-  Units.inchesToMeters(98.19) - Units.inchesToMeters(81.19); // meters
-
-// See https://firstfrc.blob.core.windows.net/frc2020/PlayingField/LayoutandMarkingDiagram.pdf
-// pages 4 and 5
-public static final double kFarTgtXPos = Units.feetToMeters(54);
-public static final double kFarTgtYPos =
-  Units.feetToMeters(27 / 2) - Units.inchesToMeters(43.75) - Units.inchesToMeters(48.0 / 2.0);
-public static final double kFarTgtZPos =
-  (Units.inchesToMeters(98.19) - targetHeight) / 2 + targetHeight;
-
-public static final Pose3d kFarTargetPose =
-  new Pose3d(
-          new Translation3d(kFarTgtXPos, kFarTgtYPos, kFarTgtZPos),
-          new Rotation3d(0.0, 0.0, Units.degreesToRadians(180)));}
+}

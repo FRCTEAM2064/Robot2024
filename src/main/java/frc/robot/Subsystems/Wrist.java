@@ -8,13 +8,12 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Constants.WristConstants;
-import frc.robot.Subsystems.Intake.IntakeState;
 
 public class Wrist extends SubsystemBase {
 
-  private CANSparkMax wristMotor;
-  private SparkAbsoluteEncoder wristEncoder;
-  private SparkPIDController wristPID;
+  private final CANSparkMax wristMotor;
+  private final SparkAbsoluteEncoder wristEncoder;
+  private final SparkPIDController wristPID;
 
   private WristState state = WristState.AT_POSITION;
   private double wristTarget = 0;
@@ -34,7 +33,7 @@ public class Wrist extends SubsystemBase {
     wristPID.setD(WristConstants.kWristD);
     wristPID.setFF(WristConstants.kWristFF);
     wristPID.setSmartMotionAllowedClosedLoopError(
-      WristConstants.kwristAngleTolerance,
+      WristConstants.kWristAngleTolerance,
       0
     );
 
@@ -95,7 +94,7 @@ public class Wrist extends SubsystemBase {
   private void updateWristState() {
     if (
       Math.abs(getWristEncoderVal() - wristTarget) >
-      WristConstants.kwristAngleTolerance
+      WristConstants.kWristAngleTolerance
     ) {
       state = WristState.MOVING;
     } else {
