@@ -18,12 +18,19 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.SubsystemCommands.*;
 import frc.robot.Constants.Constants.OIConstants;
+import frc.robot.Constants.Constants.VisionConstants;
+import frc.robot.Constants.Constants.WristConstants;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SwerveSubsystem;
 import frc.robot.Subsystems.Wrist;
 import java.io.File;
+import java.io.File;
+
+import org.photonvision.PhotonCamera;
+
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 
@@ -32,11 +39,12 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
     new File(Filesystem.getDeployDirectory(), "swerve/neo")
   );
-  final Shooter shooter = new Shooter();
-  final Wrist wrist = new Wrist();
-  final Intake intake = new Intake();
-  final Elevator elevator = new Elevator();
+  // final Shooter shooter = new Shooter();
+  // final Wrist wrist = new Wrist();
+  // final Intake intake = new Intake();
+  // final Elevator elevator = new Elevator();
   private final SendableChooser<Command> autoChooser;
+  private final PhotonCamera camera;
 
   // private final Joystick driverController = new Joystick(
   //   OIConstants.kDriverControllerPort
@@ -66,8 +74,8 @@ public class RobotContainer {
     //       driverController.getLeftX(),
     //       OIConstants.kDeadband
     //     ),
-    //   () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis),
-    //   () -> driverController.getRawAxis(OIConstants.kXboxRightYAxis)
+    //   () -> -driverController.getRawAxis(OIConstants.kXboxRightXAxis),
+    //   () -> -driverController.getRawAxis(OIConstants.kXboxRightYAxis)
     // );
 
     // Applies deadbands and inverts controls because joysticks
@@ -78,12 +86,12 @@ public class RobotContainer {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
       () ->
         MathUtil.applyDeadband(
-          driverController.getLeftY(),
+          -driverController.getLeftY(),
           OIConstants.kDeadband
         ),
       () ->
         MathUtil.applyDeadband(
-          driverController.getLeftX(),
+          -driverController.getLeftX(),
           OIConstants.kDeadband
         ),
       () -> driverController.getRawAxis(OIConstants.kXboxRightXAxis)
@@ -113,6 +121,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("IntakeFloorCmd", new IntakeFloorCmd(intake, elevator));
     // NamedCommands.registerCommand("Shoot", new InstantCommand(shooter::shoot));
 
+    camera = new PhotonCamera(VisionConstants.kFrontCamName);
 
 
     configureBindings();
@@ -125,6 +134,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    new JoystickButton(driverController, OIConstants.kXboxYButton).whileTrue(new AimAtTag(drivebase, camera));
     // new JoystickButton(driverController, OIConstants.kXboxYButton)
     //   .onTrue(new InstantCommand(shooter::shoot));
 
@@ -170,6 +180,7 @@ public class RobotContainer {
     //   .onTrue(new InstantCommand(() -> elevator.setElevatorHeight(6)));
     // -------------------------------------------
       //DRIVER MAPPING
+      /*
       new JoystickButton(driverController, OIConstants.kXboxLeftBumper)
       .whileTrue(new IntakeFloorCmd(intake, elevator));
 
@@ -216,6 +227,7 @@ public class RobotContainer {
 
       //SHUFFLEBOARD COMMANDS
       SmartDashboard.putData("Clean Wheels", new InstantCommand(shooter::cleanFeed));
+      */
 
       
 
@@ -224,7 +236,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
-    return AutoBuilder.followPath(path);
+    // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight");
+    // return AutoBuilder.followPath(path);
+    return autoChooser.getSelected();
   }
 }

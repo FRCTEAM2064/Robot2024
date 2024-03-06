@@ -29,14 +29,15 @@ public class ShootFromIntakeCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.shoot();
-    wrist.setWristAngle(WristConstants.kWristHandoffAngle);
-    intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
+   System.out.println("Inside Initialize of Shoot from Intake");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    wrist.setWristAngle(WristConstants.kWristHandoffAngle);
+    intake.setIntakeAngle(IntakeConstants.kIntakeHandOffAngle);
+    shooter.shoot();
     if (shooter.getState() == ShooterState.FEEDING) {
       intake.outtake();
     }
@@ -46,8 +47,8 @@ public class ShootFromIntakeCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.stop();
-    wrist.setWristAngle(0);
-    intake.setIntakeAngle(0);
+    wrist.setWristAngle(WristConstants.kWristHome);
+    intake.setIntakeAngle(IntakeConstants.kIntakeHome);
   }
 
   // Returns true when the command should end.
