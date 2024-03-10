@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase {
     intakeMotor =
       new CANSparkMax(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
 
-    intakeMotor.setSmartCurrentLimit(40);
+    // intakeMotor.setSmartCurrentLimit(40);
 
       intakeMotor.setInverted(false);
     intakeMotor.setIdleMode(IdleMode.kBrake);
@@ -96,7 +96,11 @@ public class Intake extends SubsystemBase {
   }
 
   public void outtake() {
-    intakeMotor.set(-0.5);
+    intakeMotor.set(-1);
+  }
+
+  public void setPivotSpeed(double speed){
+    intakePivotMotor.set(speed);
   }
 
   public void stop() {

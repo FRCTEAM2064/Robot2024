@@ -37,8 +37,8 @@ public class ScoreAmpCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.setElevatorHeight(7);
-    wrist.setWristAngle(100);
+    elevator.setElevatorHeight(9);
+    wrist.setWristAngle(110);
     wristTimer.start();
     if(elevator.getState() == ElevatorState.AT_POSITION && wrist.getState() == WristState.AT_POSITION){
       shooter.shoot();

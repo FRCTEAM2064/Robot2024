@@ -13,10 +13,12 @@ public class Constants {
 
   public static class OIConstants {
 
-    public static final int kDriverControllerPort = 0;
-    public static final int kOperatorControllerPort = 1;
+    public static final int kLeftJoystickPort = 0;
+    public static final int kRightJoystickPort = 1;
+    public static final int kJoystickTriggerButton = 1;
+    public static final int kOperatorControllerPort = 2;
 
-    public static final double kDeadband = 0.1;
+    public static final double kDeadband = 0.01;
 
     public static final int kXboxAButton = 1;
     public static final int kXboxBButton = 2;
@@ -32,7 +34,7 @@ public class Constants {
     public static final int kXboxRightTriggerAxis = 3;
     public static final int kXboxLeftXAxis = 0;
     public static final int kXboxLeftYAxis = 1;
-    public static final int kXboxRightXAxis = 4;
+    public static final int kXboxRightXAxis = 0;
     public static final int kXboxRightYAxis = 5;
   }
 
@@ -106,28 +108,29 @@ public class Constants {
 
   public static class IntakeConstants {
 
-    public static final int kHasGamePieceLimitDIO = 7;
+    public static final int kHasGamePieceLimitDIO = 2;
 
     public static final int kIntakePivotMotorID = 21;
     public static final int kIntakeMotorID = 22;
 
     public static final double kIntakeAngleTolerance = 0.05;
-    public static final double kIntakeP = 1.5;
+    public static final double kIntakeP = 7;
     public static final double kIntakeI = 0;
     public static final double kIntakeD = 0;
 
-    public static final double kIntakeFloorAngle = 300;
+    public static final double kIntakeFloorAngle = 270.0;
     public static final double kIntakeStationAngle = 120;
-    public static final double kIntakeHandOffAngle = 47.5;
+    // public static final double kIntakeHandOffAngle = 47.5;
+    public static final double kIntakeHandOffAngle = 0;
     public static final double kIntakeHome = 0;
 
     public static final double kIntakeOffset = .05;
-    public static final double kIntakeAcceleration = 0.5;
+    public static final double kIntakeAcceleration = 0.8;
   }
 
   public static class AutonConstants {
 
-    public static final PIDConstants ANGLE_PID = new PIDConstants(0.8, 0.0, 0.0);
+    public static final PIDConstants ANGLE_PID = new PIDConstants(0.1, 0.0, 0.0);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(
         0.15,
         0.0,

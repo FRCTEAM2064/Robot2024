@@ -13,11 +13,12 @@ public class IntakeFloorCmd extends Command {
   public IntakeFloorCmd(Intake intake, Elevator elevator) {
     this.intake = intake;
     this.elevator = elevator;
+    addRequirements(intake, elevator);
   }
 
   @Override
   public void initialize() {
-    elevator.setElevatorHeight(5);
+    elevator.setElevatorHeight(3);
   }
 
 

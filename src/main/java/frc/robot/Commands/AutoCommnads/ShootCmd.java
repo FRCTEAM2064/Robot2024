@@ -6,6 +6,7 @@ package frc.robot.Commands.AutoCommnads;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Shooter;
+import frc.robot.Subsystems.Shooter.ShooterState;
 
 
 
@@ -21,7 +22,10 @@ public class ShootCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.shoot();
+    if (shooter.state == ShooterState.STOP) {
+      shooter.shoot();
+    }
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.

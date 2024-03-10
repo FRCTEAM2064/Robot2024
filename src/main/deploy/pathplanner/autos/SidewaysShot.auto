@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.48005052375845514,
-      "y": 7.0
+      "x": 0.6857338843439262,
+      "y": 4.333208473636277
     },
-    "rotation": 0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -26,7 +26,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Straight"
+            "pathName": "SidewaysShot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         }
       ]

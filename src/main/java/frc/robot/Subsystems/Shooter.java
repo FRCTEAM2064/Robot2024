@@ -1,6 +1,7 @@
 package frc.robot.Subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.fasterxml.jackson.databind.ser.std.ToEmptyObjectSerializer;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -21,10 +22,11 @@ public class Shooter extends SubsystemBase {
 
     private final RelativeEncoder leaderShooterEncoder;
   public Timer feedTimer = new Timer();
+  public Timer shootTimer = new Timer();
 
-  private ShooterState state = ShooterState.STOP;
+  public ShooterState state = ShooterState.STOP;
 
-  private boolean shooting = false;
+  // private boolean shooting = false;
   public boolean hasGamePiece = false;
 
     public Shooter() {
@@ -69,7 +71,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot() {
-    shooting = true;
+    // shooting = true;
+    state = ShooterState.STARTING;
+    shootTimer.reset();
+    shootTimer.start();
   }
 
   public ShooterState getState() {
@@ -90,13 +95,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runAll() {
-    leaderShooterMotor.set(1);
+    leaderShooterMotor.set(.4);
     feederMotor.set(1);
   }
 
   private void startState() {
     if (
-      leaderShooterEncoder.getVelocity() >= ShooterConstants.kShooterTargetSpeed
+      leaderShooterEncoder.getVelocity() >= ShooterConstants.kShooterTargetSpeed || shootTimer.get() >= 1.5
     ) {
       feedTimer.reset();
       feedTimer.start();
@@ -104,6 +109,7 @@ public class Shooter extends SubsystemBase {
       state = ShooterState.FEEDING;
     } else {
       leaderShooterMotor.set(1);
+
     }
   }
 
@@ -113,7 +119,7 @@ public class Shooter extends SubsystemBase {
       feederMotor.set(0);
       feederMotor.setIdleMode(IdleMode.kCoast);
       state = ShooterState.STOP;
-      shooting = false;
+      // shooting = false;
       hasGamePiece = false;
     } else {
       leaderShooterMotor.set(1);
@@ -130,13 +136,31 @@ public class Shooter extends SubsystemBase {
   }
 
   private void stopState() {
-    if (shooting) {
-        leaderShooterMotor.set(1);
-      state = ShooterState.STARTING;
+    // if (shooting) {
+    //     leaderShooterMotor.set(1);
+    //   state = ShooterState.STARTING;
+    // } else {
+    //   leaderShooterMotor.set(0);
+    //   followerShooterMotor.set(0);
+    // }
+    leaderShooterMotor.set(0);
+    feederMotor.set(0);
+  }
+
+  private void ampState(){
+    feedTimer.start();
+
+    if (feedTimer.get() >= 3) {
+      state = ShooterState.STOP;
     } else {
-      leaderShooterMotor.set(0);
-      followerShooterMotor.set(0);
+    leaderShooterMotor.set(.1);
+    feederMotor.set(.2);
     }
+  }
+
+  public void setStateAmp(){
+    feedTimer.reset();
+    state = ShooterState.AMP;
   }
 
   public void updateShooterState() {
@@ -150,14 +174,17 @@ public class Shooter extends SubsystemBase {
       case STOP:
         stopState();
         break;
+      case AMP:
+        ampState();
+        break;
     }
   }
 
   public void debugValues() {
     SmartDashboard.putNumber("Feed Timer", feedTimer.get());
-    SmartDashboard.putBoolean("Shooting", shooting);
+    // SmartDashboard.putBoolean("Shooting", shooting);
     SmartDashboard.putBoolean("Shooter Has  Piece", hasGamePiece);
-    SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putString("Shooter State", state.toString());
     SmartDashboard.putNumber("Shooter Speed", getShooterSpeed());
   }
 
@@ -172,14 +199,15 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     updateShooterState();
     updateHasGamePiece();
-    // debugValues();
+    debugValues();
     resetGamePiece();
-    competitionValues();
+    // competitionValues();
   }
 
   public enum ShooterState {
     STARTING,
     FEEDING,
     STOP,
+    AMP,
   }
 }
