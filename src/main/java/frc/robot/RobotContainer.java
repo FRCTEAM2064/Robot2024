@@ -62,8 +62,8 @@ public class RobotContainer {
   public RobotContainer() {
 
     NamedCommands.registerCommand("Shoot", new SequentialCommandGroup(
-      new InstantCommand(() -> elevator.setElevatorHeight(5)), 
-    new ShootFromIntakeCmd(intake, shooter, wrist)));
+      new InstantCommand(() -> elevator.setElevatorHeight(9)), 
+    new ShootFromIntakeCmd(intake, shooter, wrist, elevator)));
 
     NamedCommands.registerCommand("IntakeFloorCmd", new IntakeFloorCmd(intake, elevator));
     NamedCommands.registerCommand("HandoffCmd", new HandoffCmd(wrist, shooter, intake, elevator));
@@ -228,7 +228,7 @@ public class RobotContainer {
 
 
       new JoystickButton(operatorController, OIConstants.kXboxBButton).
-      onTrue(new ShootFromIntakeCmd(intake, shooter, wrist));
+      onTrue(new ShootFromIntakeCmd(intake, shooter, wrist, elevator));
 
 
 

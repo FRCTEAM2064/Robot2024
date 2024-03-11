@@ -46,7 +46,7 @@ import java.util.function.DoubleSupplier;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-  public PhotonCamera photonCam = new PhotonCamera("photonCam");
+  // public PhotonCamera photonCam = new PhotonCamera("photonCam");
   public AprilTagFieldLayout aprilTagFieldLayout;
   public Path fieldLayoutFile = new File(Filesystem.getDeployDirectory(), "2024-crescendo.json").toPath();
 
@@ -340,7 +340,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     setSpeakerDistAndTheta();
-    addVisionMeasurement();
+    // addVisionMeasurement();
   }
 
   /**
@@ -528,31 +528,32 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * Add a fake vision reading for testing purposes.
    */
-  public void addVisionMeasurement() {
-    PhotonPipelineResult result = photonCam.getLatestResult();
-    if (result.hasTargets()) {
-      PhotonTrackedTarget target = result.getBestTarget();
-      SmartDashboard.putNumber("Photon ID", target.getFiducialId());
 
-      double imageCaptureTime = result.getTimestampSeconds();
+  // public void addVisionMeasurement() {
+  //   PhotonPipelineResult result = photonCam.getLatestResult();
+  //   if (result.hasTargets()) {
+  //     PhotonTrackedTarget target = result.getBestTarget();
+  //     SmartDashboard.putNumber("Photon ID", target.getFiducialId());
 
-      // Get the Optional<Pose3d> for the target
-      Optional<Pose3d> targetPose3dOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+  //     double imageCaptureTime = result.getTimestampSeconds();
 
-      // Check if the Optional contains a value
-      if (targetPose3dOptional.isPresent()) {
-        Pose3d targetPose3d = targetPose3dOptional.get(); // Get the Pose3d since it's present
+  //     // Get the Optional<Pose3d> for the target
+  //     Optional<Pose3d> targetPose3dOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());
 
-        // Estimate robot pose based on the camera to target and target pose
-        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
-            target.getBestCameraToTarget(),
-            targetPose3d,
-            VisionConstants.kFrontRobotToCam);
+  //     // Check if the Optional contains a value
+  //     if (targetPose3dOptional.isPresent()) {
+  //       Pose3d targetPose3d = targetPose3dOptional.get(); // Get the Pose3d since it's present
 
-        swerveDrive.addVisionMeasurement(robotPose.toPose2d(), imageCaptureTime);
-      }
-    }
-  }
+  //       // Estimate robot pose based on the camera to target and target pose
+  //       Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+  //           target.getBestCameraToTarget(),
+  //           targetPose3d,
+  //           VisionConstants.kFrontRobotToCam);
+
+  //       swerveDrive.addVisionMeasurement(robotPose.toPose2d(), imageCaptureTime);
+  //     }
+  //   }
+  // }
 
   public void setSpeakerDistAndTheta() {
     double yToRobot = Constants.kSpeakerYOffset - Units.metersToInches(getPose().getY());

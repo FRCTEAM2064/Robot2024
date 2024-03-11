@@ -2,21 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6857338843439262,
-      "y": 4.333208473636277
+      "x": 1.2060250090913958,
+      "y": 5.558888117920912
     },
-    "rotation": -60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -32,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SidewaysShot"
+            "pathName": "3NoteCenter"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {

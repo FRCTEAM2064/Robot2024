@@ -7,6 +7,7 @@ package frc.robot.Commands.SubsystemCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Constants.IntakeConstants;
 import frc.robot.Constants.Constants.WristConstants;
+import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterState;
@@ -18,14 +19,16 @@ public class ShootFromIntakeCmd extends Command {
   /** Creates a new ShootFromIntakeCmd. */
   private Intake intake;
   private Shooter shooter;
+  private Elevator elevator;
   private boolean didStart = false; 
   private Wrist wrist;
 
-  public ShootFromIntakeCmd(Intake intake, Shooter shooter, Wrist wrist) {
+  public ShootFromIntakeCmd(Intake intake, Shooter shooter, Wrist wrist, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.shooter = shooter;
     this.wrist = wrist;
+    this.elevator = elevator;
   }
 
   // Called when the command is initially scheduled.
@@ -39,6 +42,8 @@ public class ShootFromIntakeCmd extends Command {
   @Override
   public void execute() {
     wrist.setWristAngle(10);
+    elevator.setElevatorHeight(9);
+
     // shooter.shoot();
     if (shooter.getState() == ShooterState.FEEDING) {
       intake.outtake();
